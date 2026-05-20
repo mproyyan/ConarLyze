@@ -19,7 +19,7 @@ struct IntroductionView: View {
   var body: some View {
     VStack {
       VStack(alignment: .center, spacing: 20) {
-        Text("Introduce Yourself")
+        Text("Introduce zaki")
           .font(.largeTitle)
           .fontWeight(.bold)
         

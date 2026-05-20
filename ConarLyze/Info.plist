@@ -9,5 +9,8 @@
 
   <key>NSLocationWhenInUseUsageDescription</key>
   <string>We use your location to detect your local climate and weather conditions.</string>
+
+  <key>NSCameraUsageDescription</key>
+  <string>Camera is used to capture your face photo.</string>
 </dict>
 </plist>

@@ -18,14 +18,14 @@ struct IntroductionView: View {
   
   var body: some View {
     VStack {
-      VStack(alignment: .center, spacing: 20) {
+      VStack(alignment: .leading, spacing: 8) {
         Text("Introduce Yourself")
           .font(.largeTitle)
           .fontWeight(.bold)
         
         Text("Fill out the rest of your details so app can analyze your skin")
           .font(.system(size: 20))
-          .multilineTextAlignment(.center)
+          //.multilineTextAlignment(.center)
       }
       .frame(maxWidth: .infinity)
       .padding(.bottom, 60)

@@ -29,7 +29,6 @@ struct OutfitPicksView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // MARK: - Header
             HStack {
                 Button {
                     dismiss()
@@ -65,21 +64,24 @@ struct OutfitPicksView: View {
             .padding(.top, 8)
             .padding(.bottom, 10)
             
-            // MARK: - Category Tab
             OutfitCategoryTabView(
                 selectedCategory: $selectedCategory
             )
             .padding(.bottom, 16)
             
-            // MARK: - Outfit Grid
             ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(filteredOutfits) { outfit in
-                        OutfitCardView(
-                            imageName: outfit.imageName,
-                            title: outfit.title,
-                            colors: outfit.colors
-                        )
+                        NavigationLink {
+                            OutfitDetailView()
+                        } label: {
+                            OutfitCardView(
+                                imageName: outfit.imageName,
+                                title: outfit.title,
+                                colors: outfit.colors
+                            )
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.horizontal, 16)
@@ -92,5 +94,7 @@ struct OutfitPicksView: View {
 }
 
 #Preview {
-    OutfitPicksView()
+    NavigationStack {
+        OutfitPicksView()
+    }
 }

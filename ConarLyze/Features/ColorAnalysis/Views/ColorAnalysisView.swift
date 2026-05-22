@@ -29,7 +29,7 @@ struct ColorAnalysisView: View {
                 
                 // MARK: - Season Wheel
                 VStack(spacing: 8) {
-                    SeasonWheelView(size: 200)
+                    SeasonWheelView(imageName: "outfit-detail-image", size: 260)
                     Text(analysis.seasonTitle)
                         .font(.title3.weight(.semibold))
                     NavigationLink {

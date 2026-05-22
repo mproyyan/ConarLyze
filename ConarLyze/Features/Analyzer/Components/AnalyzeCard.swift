@@ -12,11 +12,10 @@ private struct AnalyzeTraitBar: View {
     let skintone: String
     let contrast: String
     
-    
     var body: some View {
         HStack(spacing: 0) {
             AnalyzeTraitItem(
-                title:"undertone",
+                title:"Undertone",
                 value: undertone
             )
             Divider()
@@ -181,10 +180,11 @@ struct AnalyzeCard: View {
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 VStack (spacing:0) {
                     Spacer()
-                    Circle()
-                        .fill(.white .opacity(0.25))
-                        .frame(width:90, height:90)
-                        .padding(.top,24)
+//                    Circle()
+//                        .fill(.white .opacity(0.25))
+//                        .frame(width:90, height:90)
+//                        .padding(.top,24)
+                    SeasonWheelView(size: 125)
                     VStack(spacing: 4) {
                       Text("Your Color Type")
                         .font(.system(size: 18, weight: .bold))
@@ -204,7 +204,8 @@ struct AnalyzeCard: View {
                             contrast: cardType.contrast
                         )
 
-                        Button {
+                        NavigationLink {
+                            ColorAnalysisView()
                         } label: {
                             HStack(spacing: 10) {
                                 Text("View full analysis")

@@ -38,20 +38,18 @@ private struct AnalyzeTraitBar: View {
         
         .frame(maxWidth:.infinity)
         .frame(height: 72)
-//        .background(.ultraThinMaterial)
-//        .background(.white.opacity(0.12))
     }
     private struct AnalyzeTraitItem: View {
         let title: String
         let value: String
 
         var body: some View {
-            VStack(alignment: .center, spacing: 4) {
+            VStack(alignment: .center, spacing: 0) {
                 Text(title)
                     .font(.system(size: 14))
 
                 Text(value)
-                    .font(.system(size: 16, weight: .bold))
+                    .font(.system(size: 18, weight: .bold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
             }
@@ -206,7 +204,7 @@ struct AnalyzeCard: View {
 
                         Button {
                         } label: {
-                            HStack(spacing: 10) {
+                            HStack(spacing: 8) {
                                 Text("View full analysis")
                                     .font(.system(size: 16, weight: .bold))
                                     .lineLimit(1)
@@ -228,8 +226,7 @@ struct AnalyzeCard: View {
                     .background(
                         LinearGradient(
                             colors: [
-                                .black.opacity(0.18),
-                                .black.opacity(0.08)
+                                .black.opacity(0.30),
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
@@ -248,9 +245,8 @@ struct AnalyzeCard: View {
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             }
         }
-        }
+    }
         
-
 #Preview {
     AnalyzeCard(cardType: .deepAutumn)
         .padding(.horizontal,20)

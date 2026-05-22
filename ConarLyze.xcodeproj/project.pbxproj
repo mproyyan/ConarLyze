@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		622B0C992FBFE70700E09D46 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622B0C982FBFE70700E09D46 /* SwiftUIView.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		622B0C982FBFE70700E09D46 /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SwiftUIView.swift; path = ../SwiftUIView.swift; sourceTree = SOURCE_ROOT; };
 		A6849AF22FBBF0D000359E45 /* ConarLyze.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConarLyze.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -45,6 +50,7 @@
 		A6849AE92FBBF0D000359E45 = {
 			isa = PBXGroup;
 			children = (
+				622B0C982FBFE70700E09D46 /* SwiftUIView.swift */,
 				A6849AF42FBBF0D000359E45 /* ConarLyze */,
 				A6849AF32FBBF0D000359E45 /* Products */,
 			);
@@ -132,6 +138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				622B0C992FBFE70700E09D46 /* SwiftUIView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

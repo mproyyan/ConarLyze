@@ -82,25 +82,59 @@ struct WheelSegment: Shape {
         let center = CGPoint(x: rect.midX, y: rect.midY)
         let outerRadius = min(rect.width, rect.height) / 2
         let innerRadius = outerRadius * innerRadiusRatio
+        let radialThickness = outerRadius - innerRadius
+        let cornerRadius = min(radialThickness * 0.18, outerRadius * 0.06)
+        let outerCornerAngle = Angle.radians(cornerRadius / outerRadius)
+        let innerCornerAngle = Angle.radians(cornerRadius / innerRadius)
         
+        let outerStart = startAngle + outerCornerAngle
+        let outerEnd = endAngle - outerCornerAngle
+        let innerStart = startAngle + innerCornerAngle
+        let innerEnd = endAngle - innerCornerAngle
+        
+        path.move(to: point(center: center, radius: outerRadius, angle: outerStart))
         path.addArc(
             center: center,
             radius: outerRadius,
-            startAngle: startAngle,
-            endAngle: endAngle,
+            startAngle: outerStart,
+            endAngle: outerEnd,
             clockwise: false
         )
-        
+        path.addQuadCurve(
+            to: point(center: center, radius: outerRadius - cornerRadius, angle: endAngle),
+            control: point(center: center, radius: outerRadius, angle: endAngle)
+        )
+        path.addLine(to: point(center: center, radius: innerRadius + cornerRadius, angle: endAngle))
+        path.addQuadCurve(
+            to: point(center: center, radius: innerRadius, angle: innerEnd),
+            control: point(center: center, radius: innerRadius, angle: endAngle)
+        )
         path.addArc(
             center: center,
             radius: innerRadius,
-            startAngle: endAngle,
-            endAngle: startAngle,
+            startAngle: innerEnd,
+            endAngle: innerStart,
             clockwise: true
+        )
+        path.addQuadCurve(
+            to: point(center: center, radius: innerRadius + cornerRadius, angle: startAngle),
+            control: point(center: center, radius: innerRadius, angle: startAngle)
+        )
+        path.addLine(to: point(center: center, radius: outerRadius - cornerRadius, angle: startAngle))
+        path.addQuadCurve(
+            to: point(center: center, radius: outerRadius, angle: outerStart),
+            control: point(center: center, radius: outerRadius, angle: startAngle)
         )
         
         path.closeSubpath()
         return path
+    }
+    
+    private func point(center: CGPoint, radius: CGFloat, angle: Angle) -> CGPoint {
+        CGPoint(
+            x: center.x + radius * cos(angle.radians),
+            y: center.y + radius * sin(angle.radians)
+        )
     }
 }
 

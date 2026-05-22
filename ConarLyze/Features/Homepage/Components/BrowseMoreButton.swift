@@ -10,7 +10,7 @@ import SwiftUI
 struct BrowseMoreButton: View {
     var body: some View {
         NavigationLink {
-            OutfitDetailView()
+            OutfitPicksView()
             // ganti nanti dap
             // pake screen outfit list
         } label: {

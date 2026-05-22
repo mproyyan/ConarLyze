@@ -9,8 +9,10 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-      LocationView()
-        Text("ria")
+      //LocationView()
+//        ResultView(
+//            season: .softAutumn
+//        )
     }
 }
 

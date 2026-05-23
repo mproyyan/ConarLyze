@@ -184,7 +184,7 @@ struct AnalyzeCard: View {
 //                        .fill(.white .opacity(0.25))
 //                        .frame(width:90, height:90)
 //                        .padding(.top,24)
-                    SeasonWheelView(imageName: "outfit-detail-image", size: 260)
+                    SeasonWheelView(imageName: "outfit-detail-image", size: 150)
                     VStack(spacing: 4) {
                       Text("Your Color Type")
                         .font(.system(size: 18, weight: .bold))

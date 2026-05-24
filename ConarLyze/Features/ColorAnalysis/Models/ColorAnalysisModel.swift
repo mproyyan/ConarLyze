@@ -22,13 +22,14 @@ struct ColorSwatchModel: Identifiable {
     let color: Color
 }
 
+
 struct ColorAnalysisModel {
     let seasonTitle: String
     let infos: [AnalysisInfoModel]
     let bestColors: [ColorSwatchModel]
     let avoidColors: [ColorSwatchModel]
+    
 }
-
 // MARK: - Dummy Data
 
 extension ColorAnalysisModel {
@@ -49,6 +50,8 @@ extension ColorAnalysisModel {
                 value: "Low Contrast",
             )
         ],
+        
+        
         bestColors: [
             ColorSwatchModel(
                 title: "Dark Blue",
@@ -133,6 +136,6 @@ extension ColorAnalysisModel {
                 hex: "#A4FF00",
                 color: Color(hex: 0xA4FF00)
             )
-        ]
+        ]        
     )
 }

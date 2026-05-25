@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ColorWheelCard: View {
     
-    let analysis: ColorAnalysisModel2
+    let analysis: ColorAnalysisModel
     
     var body: some View {
         
@@ -30,6 +30,6 @@ struct ColorWheelCard: View {
 
 #Preview {
     ColorWheelCard(
-        analysis: ColorAnalysisModel2.allSeasons[0]
+        analysis: ColorAnalysisModel.allSeasons[0]
     )
 }

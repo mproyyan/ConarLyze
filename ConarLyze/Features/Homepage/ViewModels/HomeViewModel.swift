@@ -14,6 +14,7 @@ final class HomeViewModel: ObservableObject {
     @Published var userName: String = "User"
     @Published var userProfile: UserProfile?
     @Published var analysisResult: ColorAnalysisResult?
+    @Published var userPhoto: Data?
     @Published var ideas: [FashionIdeaModel] = FashionIdeaModel.dummy
     
     @Published var recommendedOutfits: [RecommendedOutfit] = []

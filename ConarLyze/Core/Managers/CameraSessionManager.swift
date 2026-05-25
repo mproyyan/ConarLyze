@@ -251,14 +251,53 @@ extension CameraSessionManager: AVCapturePhotoCaptureDelegate {
         let fileURL   = documents.appendingPathComponent(filename)
  
         // Convert to JPEG for broad compatibility when saving
-        guard
-            let image   = UIImage(data: data),
-            let jpegData = image.jpegData(compressionQuality: 0.92)
-        else {
+        guard let image = UIImage(data: data) else {
+            throw CameraError.saveFailed("Failed to decode image from data.")
+        }
+        
+        let croppedImage = cropToFaceGuide(image: image) ?? image
+        
+        guard let jpegData = croppedImage.jpegData(compressionQuality: 0.92) else {
             throw CameraError.saveFailed("Failed to encode image as JPEG.")
         }
  
         try jpegData.write(to: fileURL, options: .atomic)
         return fileURL
+    }
+    
+    private func cropToFaceGuide(image: UIImage) -> UIImage? {
+        let screenSize = UIScreen.main.bounds.size
+        let imgSize = image.size
+        
+        let scale = max(screenSize.width / imgSize.width, screenSize.height / imgSize.height)
+        let scaledImgWidth = imgSize.width * scale
+        let scaledImgHeight = imgSize.height * scale
+        
+        let offsetX = (scaledImgWidth - screenSize.width) / 2.0
+        let offsetY = (scaledImgHeight - screenSize.height) / 2.0
+        
+        // Guide shape is 260x320. To zoom in so only the face is shown, 
+        // we use a smaller square crop size, e.g. 260 (matching the guide's width).
+        let cropSize: CGFloat = 260
+        let screenCenter = CGPoint(x: screenSize.width / 2, y: screenSize.height * 0.42)
+        
+        let screenCropRect = CGRect(
+            x: screenCenter.x - cropSize / 2,
+            y: screenCenter.y - cropSize / 2,
+            width: cropSize,
+            height: cropSize
+        )
+        
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = UIScreen.main.scale
+        
+        let renderer = UIGraphicsImageRenderer(size: screenCropRect.size, format: format)
+        let croppedImage = renderer.image { _ in
+            let drawX = -screenCropRect.origin.x - offsetX
+            let drawY = -screenCropRect.origin.y - offsetY
+            image.draw(in: CGRect(x: drawX, y: drawY, width: scaledImgWidth, height: scaledImgHeight))
+        }
+        
+        return croppedImage
     }
 }

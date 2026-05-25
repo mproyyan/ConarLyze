@@ -97,6 +97,7 @@ final class OnboardingViewModel: ObservableObject {
             
             localStateRepository.saveUserProfile(profile)
             localStateRepository.saveAnalysisResult(result)
+            localStateRepository.saveUserPhoto(imageData)
             
             saveOnboardingCompletionState()
             

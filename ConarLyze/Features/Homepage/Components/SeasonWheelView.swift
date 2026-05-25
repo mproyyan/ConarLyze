@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SeasonWheelView: View {
     let imageName: String
+    var imageData: Data? = nil
     let size: CGFloat
     var colors: [Color] = [
         Color(red: 0.45, green: 0.63, blue: 0.67), // teal
@@ -50,27 +51,39 @@ struct SeasonWheelView: View {
                 }
             }
             
-            Image(imageName)
-                .resizable()
-                .scaledToFill()
-                .frame(width: centerImageSize, height: centerImageSize)
-                .clipShape(Circle())
-                .overlay {
-                    Circle()
-                        .stroke(Color.white, lineWidth: strokeWidth)
+            Group {
+                if let data = imageData, let uiImage = UIImage(data: data) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    Image(imageName)
+                        .resizable()
+                        .scaledToFill()
                 }
-                .shadow(
-                    color: .black.opacity(0.15),
-                    radius: 8,
-                    x: 0,
-                    y: 4
-                )
+            }
+            .frame(width: centerImageSize, height: centerImageSize)
+            .clipShape(Circle())
+            .overlay {
+                Circle()
+                    .stroke(Color.white, lineWidth: strokeWidth)
+            }
+            .shadow(
+                color: .black.opacity(0.15),
+                radius: 8,
+                x: 0,
+                y: 4
+            )
         }
         .frame(width: size, height: size)
     }
     
+    private var segmentAngle: Double {
+        colors.isEmpty ? 360.0 : (360.0 / Double(colors.count))
+    }
+    
     private func angle(for index: Int) -> Angle {
-        .degrees(Double(index) * 45 - 90)
+        .degrees(Double(index) * segmentAngle - 90)
     }
 }
 

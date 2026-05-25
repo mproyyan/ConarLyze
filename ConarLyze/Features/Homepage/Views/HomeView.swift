@@ -13,26 +13,28 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
-                
                 VStack(alignment: .leading, spacing: 28) {
                     
                     // MARK: - Header
-                    HomeHeaderView(userName: viewModel.userName)
+                    
+                    HomeHeaderView(
+                        userName: viewModel.userName
+                    )
                     
                     // MARK: - Analysis Card
+                    
                     NavigationLink {
                         ColorAnalysisView()
                     } label: {
                         AnalyzeCard(
-                            cardType: cardTypeFromResult,
-                            bestColors: viewModel.analysisResult?.bestColors.map { Color(hex: $0.hex) },
-                            userPhotoData: viewModel.userPhoto
+                            cardType: cardTypeFromResult
                         )
                     }
                     .buttonStyle(.plain)
                     .frame(height: 330)
                     
                     // MARK: - Fashion Ideas Section
+                    
                     VStack(alignment: .leading, spacing: 20) {
                         VStack(alignment: .leading, spacing: 4) {
                             HStack(spacing: 8) {
@@ -61,7 +63,21 @@ struct HomeView: View {
                     }
                     
                     // MARK: - Browse More
-                    BrowseMoreButton()
+
+                    // MARK: - Browse More
+
+                    if let totalLooks = viewModel.totalLooks {
+                        NavigationLink {
+                            OutfitPicksView(
+                                bestColors: viewModel.analysisResult?.bestColors ?? [],
+                                avoidColors: viewModel.analysisResult?.avoidColors ?? [],
+                                gender: viewModel.userGender
+                            )
+                        } label: {
+                            BrowseMoreButton(totalLooks: totalLooks)
+                        }
+                        .buttonStyle(.plain)
+                    }
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 16)
@@ -70,8 +86,9 @@ struct HomeView: View {
             .background(
                 Color(.systemGroupedBackground)
             )
-            .onAppear {
+            .task {
                 viewModel.loadLocalData()
+                await viewModel.loadOutfitRecommendationsIfNeeded()
             }
         }
     }
@@ -83,7 +100,9 @@ struct HomeView: View {
             return .softSummer
         }
         
-        return AnalyzeCard.CardType.from(colorType: result.colorType)
+        return AnalyzeCard.CardType.from(
+            colorType: result.colorType
+        )
     }
 }
 

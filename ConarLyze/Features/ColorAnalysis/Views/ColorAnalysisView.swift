@@ -34,7 +34,7 @@ struct ColorAnalysisView: View {
             Text(analysis.seasonTitle)
               .font(.title3.weight(.semibold))
             NavigationLink {
-              CameraView()
+                OnboardingFlowView(initialStep: .tutorial)
             } label: {
               HStack(spacing: 8) {
                 Image(systemName: "camera")

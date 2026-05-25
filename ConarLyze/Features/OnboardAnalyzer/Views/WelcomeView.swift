@@ -7,6 +7,8 @@ import SwiftUI
 
 struct WelcomeView: View {
     
+    let onStart: () -> Void
+    
     var body: some View {
         ZStack(alignment: .bottom) {
             
@@ -45,7 +47,7 @@ struct WelcomeView: View {
                 }
                 
                 // Button
-                Button(action:{}) {
+                Button(action: onStart) {
                     Text("Start")
                         .fontWeight(.semibold)
                         .foregroundStyle(.white)
@@ -78,5 +80,5 @@ struct WelcomeView: View {
 }
 
 #Preview {
-    WelcomeView()
+    WelcomeView(onStart: {})
 }

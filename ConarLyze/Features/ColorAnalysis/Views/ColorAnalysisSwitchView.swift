@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ColorAnalysisSwitchView: View {
     
-    let analysis = ColorAnalysisModel2.allSeasons
+    let analysis = ColorAnalysisModel.allSeasons
     
     @State private var selectedSeason: String? = "Soft Summer"
     

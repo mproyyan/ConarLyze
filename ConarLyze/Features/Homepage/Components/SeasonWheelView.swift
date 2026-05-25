@@ -27,6 +27,10 @@ struct SeasonWheelView: View {
         size * 0.38
     }
     
+    private var strokeWidth: CGFloat {
+        max(size * 0.01, 1)
+    }
+    
     var body: some View {
         ZStack {
             ForEach(colors.indices, id: \.self) { index in
@@ -42,7 +46,7 @@ struct SeasonWheelView: View {
                         endAngle: angle(for: index + 1),
                         innerRadiusRatio: innerRadiusRatio
                     )
-                    .stroke(Color.white, lineWidth: 4)
+                    .stroke(Color.white, lineWidth: strokeWidth)
                 }
             }
             
@@ -53,7 +57,7 @@ struct SeasonWheelView: View {
                 .clipShape(Circle())
                 .overlay {
                     Circle()
-                        .stroke(Color.white, lineWidth: 4)
+                        .stroke(Color.white, lineWidth: strokeWidth)
                 }
                 .shadow(
                     color: .black.opacity(0.15),

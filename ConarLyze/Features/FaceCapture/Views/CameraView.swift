@@ -11,7 +11,7 @@ import AVFoundation
 // MARK: - CameraView
 
 struct CameraView: View {
-  
+    let onPhotoCaptured: (URL?) -> Void
   @StateObject private var viewModel = CameraViewModel()
   
   // Geometry-driven constants
@@ -55,6 +55,10 @@ struct CameraView: View {
       )
     }
     .task { viewModel.onAppear() }
+    .onChange(of: viewModel.capturedImageURL) { _, newValue in
+        guard let newValue else { return }
+        onPhotoCaptured(newValue)
+    }
     .onDisappear { viewModel.onDisappear() }
     .alert(item: $viewModel.alertItem) { item in
       if let action = item.primaryAction {
@@ -153,9 +157,12 @@ struct CameraView: View {
       }
       
       // Capture button
-      CaptureButton(isCapturing: viewModel.isCapturing) {
-        viewModel.capturePhoto()
-      }
+        CaptureButton(isCapturing: viewModel.isCapturing) {
+            viewModel.capturePhoto()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                onPhotoCaptured(viewModel.capturedImageURL)
+            }
+        }
       .disabled(!viewModel.isSessionRunning)
       
       Spacer().frame(height: 30)
@@ -274,57 +281,57 @@ private struct CaptureButton: View {
 // MARK: - Face guide shape
 
 struct FaceGuideShape: Shape {
-  func path(in rect: CGRect) -> Path {
-    var path = Path()
-    
-    let width = rect.width
-    let height = rect.height
-    
-    // 1. Mulai dari dahi bagian atas tengah
-    path.move(to: CGPoint(x: width * 0.5, y: 0))
-    
-    // 2. Dahi atas sampai ke Pipi Kanan
-    path.addCurve(
-      to: CGPoint(x: width * 0.9, y: height * 0.4),
-      control1: CGPoint(x: width * 0.75, y: 0),
-      control2: CGPoint(x: width * 0.9, y: height * 0.15)
-    )
-    
-    // 3. Pipi Kanan turun ke ujung kanan Dagu
-    path.addCurve(
-      to: CGPoint(x: width * 0.63, y: height * 0.98),
-      control1: CGPoint(x: width * 0.9, y: height * 0.65),
-      control2: CGPoint(x: width * 0.75, y: height * 0.92)
-    )
-    
-    // 4. Membuat lengkungan dasar Dagu yang landai
-    path.addCurve(
-      to: CGPoint(x: width * 0.37, y: height * 0.98),
-      control1: CGPoint(x: width * 0.54, y: height * 1.01),
-      control2: CGPoint(x: width * 0.46, y: height * 1.01)
-    )
-    
-    // 5. Ujung kiri Dagu naik ke Pipi Kiri
-    path.addCurve(
-      to: CGPoint(x: width * 0.1, y: height * 0.4),
-      control1: CGPoint(x: width * 0.25, y: height * 0.92),
-      control2: CGPoint(x: width * 0.1, y: height * 0.65)
-    )
-    
-    // 6. Pipi Kiri kembali ke Dahi atas tengah
-    path.addCurve(
-      to: CGPoint(x: width * 0.5, y: 0),
-      control1: CGPoint(x: width * 0.1, y: height * 0.15),
-      control2: CGPoint(x: width * 0.25, y: 0)
-    )
-    
-    path.closeSubpath()
-    return path
-  }
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        
+        let width = rect.width
+        let height = rect.height
+        
+        // 1. Mulai dari dahi bagian atas tengah
+        path.move(to: CGPoint(x: width * 0.5, y: 0))
+        
+        // 2. Dahi atas sampai ke Pipi Kanan
+        path.addCurve(
+            to: CGPoint(x: width * 0.9, y: height * 0.4),
+            control1: CGPoint(x: width * 0.75, y: 0),
+            control2: CGPoint(x: width * 0.9, y: height * 0.15)
+        )
+        
+        // 3. Pipi Kanan turun ke ujung kanan Dagu
+        path.addCurve(
+            to: CGPoint(x: width * 0.63, y: height * 0.98),
+            control1: CGPoint(x: width * 0.9, y: height * 0.65),
+            control2: CGPoint(x: width * 0.75, y: height * 0.92)
+        )
+        
+        // 4. Membuat lengkungan dasar Dagu yang landai
+        path.addCurve(
+            to: CGPoint(x: width * 0.37, y: height * 0.98),
+            control1: CGPoint(x: width * 0.54, y: height * 1.01),
+            control2: CGPoint(x: width * 0.46, y: height * 1.01)
+        )
+        
+        // 5. Ujung kiri Dagu naik ke Pipi Kiri
+        path.addCurve(
+            to: CGPoint(x: width * 0.1, y: height * 0.4),
+            control1: CGPoint(x: width * 0.25, y: height * 0.92),
+            control2: CGPoint(x: width * 0.1, y: height * 0.65)
+        )
+        
+        // 6. Pipi Kiri kembali ke Dahi atas tengah
+        path.addCurve(
+            to: CGPoint(x: width * 0.5, y: 0),
+            control1: CGPoint(x: width * 0.1, y: height * 0.15),
+            control2: CGPoint(x: width * 0.25, y: 0)
+        )
+        
+        path.closeSubpath()
+        return path
+    }
 }
 
 // MARK: - Preview
 
 #Preview {
-  CameraView()
+    CameraView(onPhotoCaptured: { _ in })
 }

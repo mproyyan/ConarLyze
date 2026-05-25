@@ -8,24 +8,20 @@
 import SwiftUI
 
 struct BrowseMoreButton: View {
+    let totalLooks: Int
+    
     var body: some View {
-        NavigationLink {
-            OutfitPicksView()
-            // ganti nanti dap
-            // pake screen outfit list
-        } label: {
-            HStack(spacing: 12) {
-                Text("Browse all 24 looks")
-                Image(systemName: "chevron.right")
-            }
-            .font(.headline)
-            .foregroundStyle(.black)
-            .frame(maxWidth: .infinity)
-//            .padding(.vertical, 20)
+        HStack(spacing: 12) {
+            Text("Browse all \(totalLooks) looks")
+            
+            Image(systemName: "chevron.right")
         }
+        .font(.headline)
+        .foregroundStyle(.black)
+        .frame(maxWidth: .infinity)
     }
 }
 
 #Preview {
-    BrowseMoreButton()
+    BrowseMoreButton(totalLooks: 112)
 }

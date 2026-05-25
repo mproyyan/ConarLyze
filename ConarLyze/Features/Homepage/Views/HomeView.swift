@@ -23,7 +23,11 @@ struct HomeView: View {
                     NavigationLink {
                         ColorAnalysisView()
                     } label: {
-                        AnalyzeCard(cardType: cardTypeFromResult)
+                        AnalyzeCard(
+                            cardType: cardTypeFromResult,
+                            bestColors: viewModel.analysisResult?.bestColors.map { Color(hex: $0.hex) },
+                            userPhotoData: viewModel.userPhoto
+                        )
                     }
                     .buttonStyle(.plain)
                     .frame(height: 330)

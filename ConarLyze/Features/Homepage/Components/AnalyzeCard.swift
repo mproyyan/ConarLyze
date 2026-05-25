@@ -240,6 +240,8 @@ struct AnalyzeCard: View {
     }
     
     let cardType: CardType
+    var bestColors: [Color]? = nil
+    var userPhotoData: Data? = nil
     
     var body: some View {
         GeometryReader { proxy in
@@ -256,12 +258,24 @@ struct AnalyzeCard: View {
                 VStack(spacing: 0) {
                     Spacer()
                     
-                    SeasonWheelView(
-                        imageName: "outfit-detail-image",
-                        size: 120
-                    )
-                    .padding(.top, 8)
-                    .padding(.bottom, 8)
+                    if let bestColors = bestColors, !bestColors.isEmpty {
+                        SeasonWheelView(
+                            imageName: "outfit-detail-image",
+                            imageData: userPhotoData,
+                            size: 120,
+                            colors: bestColors
+                        )
+                        .padding(.top, 8)
+                        .padding(.bottom, 8)
+                    } else {
+                        SeasonWheelView(
+                            imageName: "outfit-detail-image",
+                            imageData: userPhotoData,
+                            size: 120
+                        )
+                        .padding(.top, 8)
+                        .padding(.bottom, 8)
+                    }
                     
                     VStack(spacing: 2) {
                         Text("Your Color Type")

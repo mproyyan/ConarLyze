@@ -13,6 +13,7 @@ final class HomeViewModel: ObservableObject {
     
     @Published var userName: String = "User"
     @Published var analysisResult: ColorAnalysisResult?
+    @Published var userPhoto: Data?
     @Published var ideas: [FashionIdeaModel] = FashionIdeaModel.dummy
     
     // MARK: - Dependencies
@@ -42,5 +43,7 @@ final class HomeViewModel: ObservableObject {
         analysisResult = localStateRepository.loadAnalysisResult(
             as: ColorAnalysisResult.self
         )
+        
+        userPhoto = localStateRepository.loadUserPhoto()
     }
 }

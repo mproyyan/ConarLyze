@@ -24,6 +24,11 @@ protocol LocalStateRepositoryProtocol {
     func loadUserProfile() -> UserProfile?
     func clearUserProfile()
     
+    // User Photo
+    func saveUserPhoto(_ data: Data)
+    func loadUserPhoto() -> Data?
+    func clearUserPhoto()
+    
     // Convenience User Data
     func saveUserName(_ name: String)
     func loadUserName() -> String?
@@ -54,6 +59,7 @@ final class LocalStateRepository: LocalStateRepositoryProtocol {
     private enum Key {
         static let userProfile = "user_profile"
         static let analysisResult = "analysis_result"
+        static let userPhoto = "user_photo"
         
         // Dipakai oleh LocalStateRepository
         static let hasCompletedOnboarding = "has_completed_onboarding"
@@ -107,6 +113,20 @@ final class LocalStateRepository: LocalStateRepositoryProtocol {
     
     func clearUserProfile() {
         userDefaults.removeObject(forKey: Key.userProfile)
+    }
+    
+    // MARK: - User Photo
+    
+    func saveUserPhoto(_ data: Data) {
+        userDefaults.set(data, forKey: Key.userPhoto)
+    }
+    
+    func loadUserPhoto() -> Data? {
+        userDefaults.data(forKey: Key.userPhoto)
+    }
+    
+    func clearUserPhoto() {
+        userDefaults.removeObject(forKey: Key.userPhoto)
     }
     
     // MARK: - Convenience User Data
@@ -171,6 +191,7 @@ final class LocalStateRepository: LocalStateRepositoryProtocol {
     
     func clearAll() {
         clearUserProfile()
+        clearUserPhoto()
         clearAnalysisResult()
         hasCompletedOnboarding = false
     }

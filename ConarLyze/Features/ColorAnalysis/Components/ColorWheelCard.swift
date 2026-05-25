@@ -20,7 +20,8 @@ struct ColorWheelCard: View {
             
             SeasonWheelView(
                 imageName: "fotoBunga",
-                size: 200
+                size: 200,
+                colors: analysis.bestColors.map { $0.color }
             )
             .frame(maxWidth: .infinity, alignment: .center)
         }

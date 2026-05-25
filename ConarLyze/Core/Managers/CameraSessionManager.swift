@@ -276,9 +276,7 @@ extension CameraSessionManager: AVCapturePhotoCaptureDelegate {
         let offsetX = (scaledImgWidth - screenSize.width) / 2.0
         let offsetY = (scaledImgHeight - screenSize.height) / 2.0
         
-        // Guide shape is 260x320. To zoom in so only the face is shown, 
-        // we use a smaller square crop size, e.g. 260 (matching the guide's width).
-        let cropSize: CGFloat = 260
+        let cropSize: CGFloat = 240
         let screenCenter = CGPoint(x: screenSize.width / 2, y: screenSize.height * 0.42)
         
         let screenCropRect = CGRect(

@@ -27,7 +27,9 @@ struct HomeView: View {
                         ColorAnalysisView()
                     } label: {
                         AnalyzeCard(
-                            cardType: cardTypeFromResult
+                            cardType: cardTypeFromResult,
+                            bestColors: viewModel.analysisResult?.bestColors.map { Color(hex: $0.hex) },
+                            userPhotoData: viewModel.userPhoto
                         )
                     }
                     .buttonStyle(.plain)

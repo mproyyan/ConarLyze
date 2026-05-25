@@ -13,6 +13,7 @@ struct OutfitCategoryTabView: View {
     let categories: [String] = [
         "All",
         "Casual",
+        "Smart Casual",
         "Formal",
         "Streetwear",
         "Minimalist"

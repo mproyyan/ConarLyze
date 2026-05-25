@@ -37,7 +37,7 @@ final class OutfitRepository: OutfitRepositoryProtocol {
         let bodyData = try JSONEncoder().encode(requestDTO)
         
         let responseDTO: RecommendationResponseDTO = try await apiClient.request(
-            endpoint: APIConfig.recommendOutfit,
+            endpoint: APIConfig.recommendOutfit + "?minScore=51",
             method: .post,
             body: bodyData,
             headers: [

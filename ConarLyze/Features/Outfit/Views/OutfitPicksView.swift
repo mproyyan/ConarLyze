@@ -36,8 +36,9 @@ struct OutfitPicksView: View {
         if selectedCategory == "All" {
             return viewModel.recommendedOutfits
         } else {
+            let categoryForBackend = selectedCategory == "Smart Casual" ? "smart_casual" : selectedCategory.lowercased()
             return viewModel.recommendedOutfits.filter {
-                $0.styleTag.lowercased() == selectedCategory.lowercased()
+                $0.styleTag.lowercased() == categoryForBackend
             }
         }
     }

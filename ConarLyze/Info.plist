@@ -2,15 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleURLTypes</key>
-  <array>
-    <dict/>
-  </array>
-
-  <key>NSLocationWhenInUseUsageDescription</key>
-  <string>We use your location to detect your local climate and weather conditions.</string>
-
-  <key>NSCameraUsageDescription</key>
-  <string>Camera is used to capture your face photo.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict/>
+	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We use your location to detect your local climate and weather conditions.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera is used to capture your face photo.</string>
 </dict>
 </plist>

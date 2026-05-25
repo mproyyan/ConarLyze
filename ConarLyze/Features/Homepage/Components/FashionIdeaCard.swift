@@ -36,7 +36,7 @@ struct FashionIdeaCard: View {
             Spacer()
         }
         .padding(16)
-        .background(.white)
+        .background(Color.white)
         .clipShape(
             RoundedRectangle(cornerRadius: 28)
         )

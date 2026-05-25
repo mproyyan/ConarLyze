@@ -52,7 +52,14 @@ struct CameraPreviewView: UIViewRepresentable {
         let layer = view.previewLayer
         layer.session = session
         layer.videoGravity = .resizeAspectFill
-        layer.connection?.videoOrientation = .portrait
+        if let connection = layer.connection {
+            if #available(iOS 17.0, *) {
+                // 0 degrees corresponds to portrait orientation
+                connection.videoRotationAngle = 0
+            } else {
+                connection.videoOrientation = .portrait
+            }
+        }
  
         return view
     }
@@ -61,5 +68,13 @@ struct CameraPreviewView: UIViewRepresentable {
         // Ensure the session reference stays current if it ever changes
         uiView.previewLayer.session = session
         uiView.previewLayer.frame = uiView.bounds
+        if let connection = uiView.previewLayer.connection {
+            if #available(iOS 17.0, *) {
+                connection.videoRotationAngle = 0
+            } else {
+                connection.videoOrientation = .portrait
+            }
+        }
     }
 }
+

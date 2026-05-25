@@ -96,7 +96,7 @@ struct ColorAnalysisView: View {
     .toolbar {
       ToolbarItem(placement: .topBarTrailing) {
         NavigationLink {
-          CameraView()
+          ColorAnalysisSwitchView()
           // ganti pake halaman select manual palette
         } label: {
           

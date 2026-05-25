@@ -19,7 +19,7 @@ private struct AnalyzeTraitBar: View {
                 value: undertone
             )
             Divider()
-                .background(.white.opacity(0.7))
+                .background(.white.opacity(1))
 
             AnalyzeTraitItem(
                 title: "Skintone",
@@ -27,7 +27,7 @@ private struct AnalyzeTraitBar: View {
             )
 
             Divider()
-                .background(.white.opacity(0.7))
+                .background(.white.opacity(1))
 
             AnalyzeTraitItem(
                 title: "Contrast",
@@ -36,14 +36,15 @@ private struct AnalyzeTraitBar: View {
         }
         
         .frame(maxWidth:.infinity)
-        .frame(height: 72)
+        .frame(height: 64)
+        
     }
     private struct AnalyzeTraitItem: View {
         let title: String
         let value: String
 
         var body: some View {
-            VStack(alignment: .center, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
                 Text(title)
                     .font(.system(size: 14))
 
@@ -173,22 +174,21 @@ struct AnalyzeCard: View {
                     .scaledToFill()
                     .frame(
                         width: proxy.size.width,
+                        height: proxy.size.height
                         )
                     .clipped()
-                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 VStack (spacing:0) {
                     Spacer()
-//                    Circle()
-//                        .fill(.white .opacity(0.25))
-//                        .frame(width:90, height:90)
-//                        .padding(.top,24)
-                    SeasonWheelView(imageName: "outfit-detail-image", size: 150)
-                    VStack(spacing: 4) {
+                    SeasonWheelView(imageName: "outfit-detail-image", size: 120)
+                        .padding(.top,8)
+                        .padding(.bottom,8)
+                        
+                    VStack(spacing: 2) {
                       Text("Your Color Type")
                         .font(.system(size: 18, weight: .bold))
                       
                       Text(cardType.title)
-                        .font(.system(size: 46, weight: .bold))
+                        .font(.system(size: 38, weight: .bold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
                     }
@@ -196,15 +196,11 @@ struct AnalyzeCard: View {
                     .padding(.horizontal,16)
                     .padding(.bottom,16)
                     VStack(spacing: 0) {
-                        AnalyzeTraitBar(
+                        AnalyzeTraitBar (
                             undertone: cardType.undertone,
                             skintone: cardType.skintone,
                             contrast: cardType.contrast
                         )
-
-                        NavigationLink {
-                            ColorAnalysisView()
-                        } label: {
                             HStack(spacing: 8) {
                                 Text("View full analysis")
                                     .font(.system(size: 16, weight: .bold))
@@ -215,24 +211,15 @@ struct AnalyzeCard: View {
                             }
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
-                            .frame(height: 58)
-                        }
+                            .frame(height: 52)
                         .overlay(alignment: .top) {
                             Rectangle()
                                 .fill(.white.opacity(0.45))
                                 .frame(height: 1)
                         }
                     }
-                    .glassEffect(.regular, in: .rect(cornerRadius: 0))
-                    .background(
-                        LinearGradient(
-                            colors: [
-                                .black.opacity(0.30),
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
+                    .background(.ultraThinMaterial)
+                    .background(.black.opacity(0.22))
                     .overlay(alignment: .top) {
                       Rectangle()
                         .fill(.white.opacity(0.45))
@@ -242,14 +229,14 @@ struct AnalyzeCard: View {
                     }
                 
                 }
-            .frame(height: 330)
-            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             }
+        .frame(height: 330)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
     }
         
 #Preview {
-    AnalyzeCard(cardType: .deepAutumn)
+    AnalyzeCard(cardType: .clearSpring)
         .padding(.horizontal,20)
         .frame(width:380)
 }

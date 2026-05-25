@@ -26,9 +26,14 @@ final class APIClient {
         
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
+        request.timeoutInterval = 30
         request.httpBody = body
         
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        if body != nil {
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        }
         
         for (key, value) in headers {
             request.setValue(value, forHTTPHeaderField: key)
@@ -55,11 +60,18 @@ final class APIClient {
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.post.rawValue
+        request.timeoutInterval = 30
+        
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue(
             "multipart/form-data; boundary=\(boundary)",
             forHTTPHeaderField: "Content-Type"
         )
+        
+        print("Upload image fieldName:", fieldName)
+        print("Upload image fileName:", fileName)
+        print("Upload image mimeType:", mimeType)
+        print("Upload image size:", formatBytes(imageData.count))
         
         let body = createMultipartBody(
             imageData: imageData,
@@ -69,6 +81,8 @@ final class APIClient {
             additionalFields: additionalFields,
             boundary: boundary
         )
+        
+        print("Multipart body size:", formatBytes(body.count))
         
         request.httpBody = body
         
@@ -81,13 +95,13 @@ final class APIClient {
         do {
             print("Request URL:", request.url?.absoluteString ?? "No URL")
             print("Request Method:", request.httpMethod ?? "No Method")
+            
             let (data, response) = try await URLSession.shared.data(for: request)
             
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw NetworkError.invalidResponse
             }
             
-            print("URL:", request.url?.absoluteString ?? "No URL")
             print("Status code:", httpResponse.statusCode)
             print("Raw response:", String(data: data, encoding: .utf8) ?? "No response")
             
@@ -111,8 +125,11 @@ final class APIClient {
                 throw NetworkError.decodingFailed
             }
         } catch let error as NetworkError {
+            print("NetworkError:", error)
             throw error
         } catch {
+            print("Unknown URLSession error:", error)
+            print("Localized error:", error.localizedDescription)
             throw NetworkError.unknown(error)
         }
     }
@@ -143,6 +160,13 @@ final class APIClient {
         body.appendString("--\(boundary)--\r\n")
         
         return body
+    }
+    
+    // MARK: - Helper
+    
+    private func formatBytes(_ bytes: Int) -> String {
+        let mb = Double(bytes) / 1024 / 1024
+        return String(format: "%.2f MB", mb)
     }
 }
 

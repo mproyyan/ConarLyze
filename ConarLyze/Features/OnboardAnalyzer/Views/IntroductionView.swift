@@ -11,7 +11,7 @@ struct IntroductionView: View {
     @Binding var name: String
     @Binding var selectedGender: Gender?
     let onNext: () -> Void
-    enum Gender {
+    enum Gender: String {
         case male
         case female
     }

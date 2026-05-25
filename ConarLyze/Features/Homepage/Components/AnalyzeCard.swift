@@ -64,9 +64,9 @@ private struct AnalyzeTraitBar: View {
 struct AnalyzeCard: View {
     
     enum CardType {
-        case darkWinter
-        case trueWinter
-        case brightWinter
+        case deepWinter
+        case coolWinter
+        case clearWinter
         
         case clearSpring
         case warmSpring
@@ -92,13 +92,13 @@ struct AnalyzeCard: View {
             switch normalized {
             // Winter
             case "dark winter", "deep winter":
-                return .darkWinter
+                return .deepWinter
                 
             case "true winter", "cool winter":
-                return .trueWinter
+                return .coolWinter
                 
             case "bright winter", "clear winter":
-                return .brightWinter
+                return .clearWinter
                 
             // Spring
             case "clear spring", "bright spring":
@@ -139,12 +139,12 @@ struct AnalyzeCard: View {
         
         var title: String {
             switch self {
-            case .darkWinter:
-                return "Dark Winter"
-            case .trueWinter:
-                return "True Winter"
-            case .brightWinter:
-                return "Bright Winter"
+            case .deepWinter:
+                return "Deep Winter"
+            case .coolWinter:
+                return "Cool Winter"
+            case .clearWinter:
+                return "Clear Winter"
             case .clearSpring:
                 return "Clear Spring"
             case .warmSpring:
@@ -168,11 +168,11 @@ struct AnalyzeCard: View {
         
         var backgroundImageName: String {
             switch self {
-            case .darkWinter:
+            case .deepWinter:
                 return "darkWinter"
-            case .trueWinter:
+            case .coolWinter:
                 return "trueWinter"
-            case .brightWinter:
+            case .clearWinter:
                 return "brightWinter"
             case .clearSpring:
                 return "clearSpring"
@@ -200,7 +200,7 @@ struct AnalyzeCard: View {
             case .warmSpring, .warmAutumn, .deepAutumn, .softAutumn:
                 return "Warm"
                 
-            case .darkWinter, .trueWinter, .brightWinter,
+            case .deepWinter, .coolWinter, .clearWinter,
                  .lightSummer, .coolSummer, .softSummer:
                 return "Cool"
                 
@@ -217,7 +217,7 @@ struct AnalyzeCard: View {
             case .softSummer, .softAutumn:
                 return "Soft"
                 
-            case .darkWinter, .deepAutumn:
+            case .deepWinter, .deepAutumn:
                 return "Deep"
                 
             default:
@@ -227,7 +227,7 @@ struct AnalyzeCard: View {
         
         var contrast: String {
             switch self {
-            case .darkWinter, .brightWinter, .clearSpring, .deepAutumn:
+            case .deepWinter, .clearWinter, .clearSpring, .deepAutumn:
                 return "High"
                 
             case .softSummer, .softAutumn, .lightSummer, .lightSpring:

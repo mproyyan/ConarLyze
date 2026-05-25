@@ -35,11 +35,11 @@ struct HomeView: View {
                   .foregroundStyle(.secondary)
                 
                 Text("CURATED FOR YOU")
-                  .font(.headline)
+                  .font(.subheadline)
                   .foregroundStyle(.secondary)
               }
               Text("Fashion Ideas")
-                .font(.largeTitle.bold())
+                .font(.title.bold())
             }
             VStack(spacing: 16) {
               ForEach(ideas) { item in

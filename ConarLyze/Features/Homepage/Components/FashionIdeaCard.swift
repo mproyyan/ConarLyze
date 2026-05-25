@@ -23,12 +23,12 @@ struct FashionIdeaCard: View {
             VStack(alignment: .leading, spacing: 16) {
                 Spacer()
                 Text(item.title)
-                    .font(.title3.weight(.semibold))
+                    .font(.headline.weight(.semibold))
                 ColorPaletteView(
                     colors: item.colors
                 )
                 Text(item.style)
-                    .font(.headline)
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
                 
                 Spacer()

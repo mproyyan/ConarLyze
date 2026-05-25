@@ -10,14 +10,7 @@ import SwiftUI
 struct SeasonWheelView: View {
     let imageName: String
     let size: CGFloat
-    
-    private let innerRadiusRatio: CGFloat = 0.30
-    
-    private var centerImageSize: CGFloat {
-        size * 0.38
-    }
-    
-    private let colors: [Color] = [
+    var colors: [Color] = [
         Color(red: 0.45, green: 0.63, blue: 0.67), // teal
         Color(red: 0.64, green: 0.60, blue: 0.40), // khaki
         Color(red: 0.72, green: 0.43, blue: 0.47), // rose
@@ -27,6 +20,16 @@ struct SeasonWheelView: View {
         Color(red: 0.64, green: 0.65, blue: 0.43), // olive
         Color(red: 0.64, green: 0.43, blue: 0.57)  // mauve
     ]
+    
+    private let innerRadiusRatio: CGFloat = 0.30
+    
+    private var centerImageSize: CGFloat {
+        size * 0.38
+    }
+    
+    private var strokeWidth: CGFloat {
+        max(size * 0.01, 1)
+    }
     
     var body: some View {
         ZStack {
@@ -43,7 +46,7 @@ struct SeasonWheelView: View {
                         endAngle: angle(for: index + 1),
                         innerRadiusRatio: innerRadiusRatio
                     )
-                    .stroke(Color.white, lineWidth: 4)
+                    .stroke(Color.white, lineWidth: strokeWidth)
                 }
             }
             
@@ -54,7 +57,7 @@ struct SeasonWheelView: View {
                 .clipShape(Circle())
                 .overlay {
                     Circle()
-                        .stroke(Color.white, lineWidth: 4)
+                        .stroke(Color.white, lineWidth: strokeWidth)
                 }
                 .shadow(
                     color: .black.opacity(0.15),
@@ -141,6 +144,16 @@ struct WheelSegment: Shape {
 #Preview {
     SeasonWheelView(
         imageName: "fotoBunga",
-        size: 300
+        size: 300,
+        colors: [
+            Color(red: 0.45, green: 0.63, blue: 0.67),
+            Color(red: 0.64, green: 0.60, blue: 0.40),
+            Color(red: 0.72, green: 0.43, blue: 0.47),
+            Color(red: 0.44, green: 0.38, blue: 0.65),
+            Color(red: 0.42, green: 0.49, blue: 0.67),
+            Color(red: 0.43, green: 0.64, blue: 0.47),
+            Color(red: 0.64, green: 0.65, blue: 0.43),
+            Color(red: 0.64, green: 0.43, blue: 0.57)
+        ]
     )
 }

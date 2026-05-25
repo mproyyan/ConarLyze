@@ -9,11 +9,12 @@ import SwiftUI
 
 @main
 struct ConarLyzeApp: App {
+    @StateObject private var container = DIContainer()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(container)
         }
     }
 }
-
-

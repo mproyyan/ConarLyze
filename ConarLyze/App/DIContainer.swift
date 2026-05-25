@@ -48,4 +48,13 @@ final class DIContainer: ObservableObject {
         self.analysisRepository = analysisRepository
         self.outfitRepository = outfitRepository
     }
+    
+    // MARK: - ViewModel Factory
+    
+    func makeOnboardingViewModel() -> OnboardingViewModel {
+        OnboardingViewModel(
+            analysisRepository: analysisRepository,
+            localStateRepository: localStateRepository
+        )
+    }
 }

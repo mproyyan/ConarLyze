@@ -136,7 +136,7 @@ struct AnalyzeCard: View {
         var undertone: String {
           switch self {
           case .softSummer:
-            return "Cool to Neutral"
+            return "Cool"
           case .warmSpring, .deepAutumn:
             return "Warm"
           default:

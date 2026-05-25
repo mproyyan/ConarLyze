@@ -75,6 +75,7 @@ final class HomeViewModel: ObservableObject {
         
         self.userProfile = profile
         self.analysisResult = result
+        self.userPhoto = localStateRepository.loadUserPhoto()
         
         if let name = profile?.name.trimmingCharacters(in: .whitespacesAndNewlines),
            !name.isEmpty {

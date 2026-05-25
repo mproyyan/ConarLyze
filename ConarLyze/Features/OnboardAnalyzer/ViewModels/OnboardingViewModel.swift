@@ -1,95 +1,103 @@
-    //
-    //  OnboardingViewModel.swift
-    //  ConarLyze
-    //
-    //  Created by Ahmad Zaki on 25/05/26.
-    //
+//
+//  OnboardingViewModel.swift
+//  ConarLyze
+//
+//  Created by Ahmad Zaki on 25/05/26.
+//
 
-    import SwiftUI
-    internal import Combine
+import Foundation
+internal import Combine
 
-    @MainActor
-    final class OnboardingViewModel: ObservableObject {
-
-        enum Step {
-            case welcome
-            case introduction
-            case tutorial
-            case camera
-            case analyzing
-        }
-
-        // MARK: - Navigation State
-
-        @Published var currentStep: Step
-
-        init(initialStep: Step = .welcome) {
-            self.currentStep = initialStep
-        }
-
-        // MARK: - User Input
-
-        @Published var userName: String = ""
-        @Published var selectedGender: IntroductionView.Gender?
-
-        // MARK: - Loading State
-
-        @Published var isAnalyzing: Bool = false
-        @Published var errorMessage: String?
-
-        // MARK: - App State
-
-        @AppStorage("hasCompletedOnboarding")
-        var hasCompletedOnboarding: Bool = false
-
-        // MARK: - Navigation Actions
-
-        func goToIntroduction() {
-            currentStep = .introduction
-        }
-
-        func goToTutorial() {
-            currentStep = .tutorial
-        }
-
-        func goToCamera() {
-            currentStep = .camera
-        }
-
-        // MARK: - Analyze Flow
-
-        func analyzeColor(from imageURL: URL?) async {
-
-            guard let imageURL else {
-                errorMessage = "Image not found"
-                return
-            }
-
-            currentStep = .analyzing
-            isAnalyzing = true
-
-            do {
-
-                // TODO:
-                // Call analyzeColor API here
-
-                print("Analyzing image:", imageURL)
-
-                // Simulate API loading
-                try await Task.sleep(for: .seconds(3))
-
-                // TODO:
-                // Save response using LocalStateRepository
-
-                // Success
-                hasCompletedOnboarding = true
-
-            } catch {
-
-                errorMessage = error.localizedDescription
-
-            }
-
-            isAnalyzing = false
+@MainActor
+final class OnboardingViewModel: ObservableObject {
+    
+    // MARK: - Step
+    
+    enum Step {
+        case welcome
+        case introduction
+        case tutorial
+        case camera
+        case analyzing
+    }
+    
+    // MARK: - Published Flow State
+    
+    @Published var currentStep: Step = .welcome
+    @Published var userName: String = ""
+    @Published var selectedGender: IntroductionView.Gender? = nil
+    
+    // MARK: - Published API State
+    
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
+    @Published var analysisResult: ColorAnalysisResult?
+    @Published var didCompleteOnboarding: Bool = false
+    
+    // MARK: - Dependencies
+    
+    private let analysisRepository: AnalysisRepositoryProtocol
+    private let localStateRepository: LocalStateRepositoryProtocol
+    
+    // MARK: - Init
+    
+    init(
+        initialStep: Step = .welcome,
+        analysisRepository: AnalysisRepositoryProtocol = AnalysisRepository(
+            apiClient: APIClient.shared,
+            localStateRepository: LocalStateRepository.shared
+        ),
+        localStateRepository: LocalStateRepositoryProtocol = LocalStateRepository.shared
+    ) {
+        self.currentStep = initialStep
+        self.analysisRepository = analysisRepository
+        self.localStateRepository = localStateRepository
+    }
+    
+    // MARK: - Flow Actions
+    
+    func goToIntroduction() {
+        currentStep = .introduction
+    }
+    
+    func goToTutorial() {
+        currentStep = .tutorial
+    }
+    
+    func goToCamera() {
+        currentStep = .camera
+    }
+    
+    func goToAnalyzing() {
+        currentStep = .analyzing
+    }
+    
+    func goBackToWelcome() {
+        currentStep = .welcome
+    }
+    
+    // MARK: - Analyze Image
+    
+    func analyzeCapturedImage(_ imageData: Data) async {
+        isLoading = true
+        errorMessage = nil
+        currentStep = .analyzing
+        
+        do {
+            let result = try await analysisRepository.analyzeColor(imageData: imageData)
+            
+            analysisResult = result
+            
+            try localStateRepository.saveAnalysisResult(result)
+            
+            UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
+            
+            didCompleteOnboarding = true
+            isLoading = false
+            
+        } catch {
+            errorMessage = error.localizedDescription
+            isLoading = false
         }
     }
+}

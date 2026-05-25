@@ -4,7 +4,6 @@
 //
 //  Created by Daffa Burane Nugraha on 25/05/26.
 //
-//
 
 import Foundation
 
@@ -20,14 +19,23 @@ struct UserProfile: Codable {
 protocol LocalStateRepositoryProtocol {
     var hasCompletedOnboarding: Bool { get set }
     
+    // User Profile
     func saveUserProfile(_ profile: UserProfile)
     func loadUserProfile() -> UserProfile?
     func clearUserProfile()
     
+    // Convenience User Data
+    func saveUserName(_ name: String)
+    func loadUserName() -> String?
+    func saveSelectedGender(_ gender: String)
+    func loadSelectedGender() -> String?
+    
+    // Analysis Result
     func saveAnalysisResult<T: Encodable>(_ result: T)
     func loadAnalysisResult<T: Decodable>(as type: T.Type) -> T?
     func clearAnalysisResult()
     
+    // Clear
     func clearAll()
 }
 
@@ -46,7 +54,12 @@ final class LocalStateRepository: LocalStateRepositoryProtocol {
     private enum Key {
         static let userProfile = "user_profile"
         static let analysisResult = "analysis_result"
+        
+        // Dipakai oleh LocalStateRepository
         static let hasCompletedOnboarding = "has_completed_onboarding"
+        
+        // Dipakai oleh @AppStorage di View
+        static let appStorageHasCompletedOnboarding = "hasCompletedOnboarding"
     }
     
     // MARK: - Init
@@ -59,10 +72,12 @@ final class LocalStateRepository: LocalStateRepositoryProtocol {
     
     var hasCompletedOnboarding: Bool {
         get {
-            userDefaults.bool(forKey: Key.hasCompletedOnboarding)
+            userDefaults.bool(forKey: Key.hasCompletedOnboarding) ||
+            userDefaults.bool(forKey: Key.appStorageHasCompletedOnboarding)
         }
         set {
             userDefaults.set(newValue, forKey: Key.hasCompletedOnboarding)
+            userDefaults.set(newValue, forKey: Key.appStorageHasCompletedOnboarding)
         }
     }
     
@@ -92,6 +107,36 @@ final class LocalStateRepository: LocalStateRepositoryProtocol {
     
     func clearUserProfile() {
         userDefaults.removeObject(forKey: Key.userProfile)
+    }
+    
+    // MARK: - Convenience User Data
+    
+    func saveUserName(_ name: String) {
+        let currentGender = loadUserProfile()?.gender ?? ""
+        let profile = UserProfile(
+            name: name,
+            gender: currentGender
+        )
+        
+        saveUserProfile(profile)
+    }
+    
+    func loadUserName() -> String? {
+        loadUserProfile()?.name
+    }
+    
+    func saveSelectedGender(_ gender: String) {
+        let currentName = loadUserProfile()?.name ?? ""
+        let profile = UserProfile(
+            name: currentName,
+            gender: gender
+        )
+        
+        saveUserProfile(profile)
+    }
+    
+    func loadSelectedGender() -> String? {
+        loadUserProfile()?.gender
     }
     
     // MARK: - Analysis Result

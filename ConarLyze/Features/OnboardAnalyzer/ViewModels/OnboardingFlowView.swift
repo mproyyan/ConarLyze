@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct OnboardingFlowView: View {
     @StateObject private var viewModel: OnboardingViewModel
@@ -47,8 +48,29 @@ struct OnboardingFlowView: View {
                         return
                     }
                     
-                    Task {
-                        await analyzeImage(from: imageURL)
+                    do {
+                        let rawImageData = try Data(contentsOf: imageURL)
+                        
+                        guard let image = UIImage(data: rawImageData) else {
+                            viewModel.errorMessage = "Failed to process captured image."
+                            return
+                        }
+                        
+                        let resizedImage = image.resized(maxDimension: 1024)
+                        
+                        guard let compressedData = resizedImage.jpegData(compressionQuality: 0.6) else {
+                            viewModel.errorMessage = "Failed to compress captured image."
+                            return
+                        }
+                        
+                        print("Raw image size:", formatBytes(rawImageData.count))
+                        print("Compressed image size:", formatBytes(compressedData.count))
+                        
+                        Task {
+                            await viewModel.analyzeCapturedImage(compressedData)
+                        }
+                    } catch {
+                        viewModel.errorMessage = "Failed to read captured image file."
                     }
                 }
                 
@@ -71,17 +93,6 @@ struct OnboardingFlowView: View {
         }
     }
     
-    // MARK: - Analyze Image
-    
-    private func analyzeImage(from imageURL: URL) async {
-        do {
-            let imageData = try Data(contentsOf: imageURL)
-            await viewModel.analyzeCapturedImage(imageData)
-        } catch {
-            viewModel.errorMessage = "Failed to read captured image."
-        }
-    }
-    
     // MARK: - Error Alert Binding
     
     private var errorAlertBinding: Binding<Bool> {
@@ -95,5 +106,38 @@ struct OnboardingFlowView: View {
                 }
             }
         )
+    }
+    
+    // MARK: - Helper
+    
+    private func formatBytes(_ bytes: Int) -> String {
+        let mb = Double(bytes) / 1024 / 1024
+        return String(format: "%.2f MB", mb)
+    }
+}
+
+// MARK: - UIImage Resize Helper
+
+private extension UIImage {
+    func resized(maxDimension: CGFloat) -> UIImage {
+        let originalWidth = size.width
+        let originalHeight = size.height
+        
+        let maxOriginalDimension = max(originalWidth, originalHeight)
+        
+        guard maxOriginalDimension > maxDimension else {
+            return self
+        }
+        
+        let scale = maxDimension / maxOriginalDimension
+        let newWidth = originalWidth * scale
+        let newHeight = originalHeight * scale
+        let newSize = CGSize(width: newWidth, height: newHeight)
+        
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        
+        return renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: newSize))
+        }
     }
 }

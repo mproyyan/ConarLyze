@@ -8,64 +8,81 @@
 import SwiftUI
 
 struct HomeView: View {
-  
-  private let ideas = FashionIdeaModel.dummy
-  
-  var body: some View {
-    NavigationStack {
-      ScrollView(showsIndicators: false) {
-        
-        VStack(alignment: .leading, spacing: 28) {
-          
-          // MARK: - Header
-          HomeHeaderView()
-          NavigationLink {
-            ColorAnalysisView()
-          } label: {
-            AnalyzeCard(cardType: .softSummer)
-          }
-          .buttonStyle(.plain)
-          .frame(height: 330)
-          
-          // MARK: - Fashion Ideas Section
-          VStack(alignment: .leading, spacing: 20) {
-            VStack(alignment: .leading, spacing: 4) {
-              HStack(spacing: 8) {
-                Image(systemName: "tshirt")
-                  .foregroundStyle(.secondary)
+    @StateObject private var viewModel = HomeViewModel()
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView(showsIndicators: false) {
                 
-                Text("CURATED FOR YOU")
-                  .font(.headline)
-                  .foregroundStyle(.secondary)
-              }
-              Text("Fashion Ideas")
-                .font(.largeTitle.bold())
-            }
-            VStack(spacing: 16) {
-              ForEach(ideas) { item in
-                NavigationLink {
-                  OutfitDetailView()
-                } label: {
-                  FashionIdeaCard(item: item)
+                VStack(alignment: .leading, spacing: 28) {
+                    
+                    // MARK: - Header
+                    HomeHeaderView(userName: viewModel.userName)
+                    
+                    // MARK: - Analysis Card
+                    NavigationLink {
+                        ColorAnalysisView()
+                    } label: {
+                        AnalyzeCard(cardType: cardTypeFromResult)
+                    }
+                    .buttonStyle(.plain)
+                    .frame(height: 330)
+                    
+                    // MARK: - Fashion Ideas Section
+                    VStack(alignment: .leading, spacing: 20) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack(spacing: 8) {
+                                Image(systemName: "tshirt")
+                                    .foregroundStyle(.secondary)
+                                
+                                Text("CURATED FOR YOU")
+                                    .font(.headline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            
+                            Text("Fashion Ideas")
+                                .font(.largeTitle.bold())
+                        }
+                        
+                        VStack(spacing: 16) {
+                            ForEach(viewModel.ideas) { item in
+                                NavigationLink {
+                                    OutfitDetailView()
+                                } label: {
+                                    FashionIdeaCard(item: item)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                    
+                    // MARK: - Browse More
+                    BrowseMoreButton()
                 }
-                .buttonStyle(.plain)
-              }
+                .padding(.horizontal, 24)
+                .padding(.top, 16)
+                .padding(.bottom, 16)
             }
-          }
-          // MARK: - Browse More
-          BrowseMoreButton()
+            .background(
+                Color(.systemGroupedBackground)
+            )
+            .onAppear {
+                viewModel.loadLocalData()
+            }
         }
-        .padding(.horizontal, 24)
-        .padding(.top, 16)
-        .padding(.bottom, 16)
-      }
-      .background(
-        Color(.systemGroupedBackground)
-      )
     }
-  }
+    
+    // MARK: - Analysis Mapping
+    
+    private var cardTypeFromResult: AnalyzeCard.CardType {
+        guard let result = viewModel.analysisResult else {
+            return .softSummer
+        }
+        
+        return AnalyzeCard.CardType.from(colorType: result.colorType)
+    }
 }
 
 #Preview {
-  HomeView()
+    HomeView()
 }

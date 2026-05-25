@@ -84,20 +84,47 @@ final class OnboardingViewModel: ObservableObject {
         currentStep = .analyzing
         
         do {
-            let result = try await analysisRepository.analyzeColor(imageData: imageData)
+            let result = try await analysisRepository.analyzeColor(
+                imageData: imageData
+            )
             
             analysisResult = result
             
-            try localStateRepository.saveAnalysisResult(result)
+            let profile = UserProfile(
+                name: resolvedUserName,
+                gender: selectedGender?.rawValue ?? ""
+            )
             
-            UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
+            localStateRepository.saveUserProfile(profile)
+            localStateRepository.saveAnalysisResult(result)
+            
+            saveOnboardingCompletionState()
             
             didCompleteOnboarding = true
             isLoading = false
             
         } catch {
-            errorMessage = error.localizedDescription
+            print("Analyze failed:", error)
+            print("Analyze localized error:", error.localizedDescription)
+            
             isLoading = false
+            currentStep = .camera
+            errorMessage = error.localizedDescription
         }
+    }
+    
+    // MARK: - Helpers
+    
+    private var resolvedUserName: String {
+        let trimmedName = userName.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+        
+        return trimmedName.isEmpty ? "User" : trimmedName
+    }
+    
+    private func saveOnboardingCompletionState() {
+        UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
+        UserDefaults.standard.set(true, forKey: "has_completed_onboarding")
     }
 }

@@ -15,7 +15,8 @@ struct CameraView: View {
   @StateObject private var viewModel = CameraViewModel()
   
   // Geometry-driven constants
-  private let guideSize = CGSize(width: 260, height: 320)
+  // Scaled up so user doesn't have to reach out too far
+  private let guideSize = CGSize(width: 280, height: 360)
   
   var body: some View {
     GeometryReader { geo in

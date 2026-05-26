@@ -90,7 +90,7 @@ struct OutfitDetailView: View {
                             
                             VStack(alignment: .leading, spacing: 16) {
                                 Text("Style Keywords")
-                                    .font(.title3.weight(.medium))
+                                  .font(.system(size: 18, weight: .semibold))
                                 
                                 ForEach(outfitKeywords) { item in
                                     OutfitKeywordRow(
@@ -100,6 +100,16 @@ struct OutfitDetailView: View {
                                     )
                                 }
                             }
+                          
+                          VStack(alignment: .leading, spacing: 16) {
+                            Text("Why It Works")
+                              .font(.system(size: 18, weight: .semibold))
+                            
+                            Text("This look uses a subtle analogous color harmony between the blue tones in the navy jeans and steel blue sneakers, creating a naturally connected palette. The white tee brightens the outfit for balance, while the black bomber jacket adds depth and sharp contrast that makes the silhouette feel cleaner and more refined.")
+                              .font(.system(size: 14))
+                              .foregroundStyle(Color.gray)
+                              .lineSpacing(6)
+                          }
                         }
                         .padding(.horizontal, 24)
                         .padding(.top, 36)

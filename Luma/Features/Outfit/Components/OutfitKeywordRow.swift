@@ -21,7 +21,7 @@ struct OutfitKeywordRow: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.headline)
+                .font(.system(size: 14))
 
                 Text(description)
                     .font(.caption)

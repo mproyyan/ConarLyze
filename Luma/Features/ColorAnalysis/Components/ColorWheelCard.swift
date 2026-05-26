@@ -10,6 +10,7 @@ import SwiftUI
 struct ColorWheelCard: View {
     
     let analysis: ColorAnalysisModel
+    let userPhotoData: Data?
     
     var body: some View {
         
@@ -18,8 +19,15 @@ struct ColorWheelCard: View {
             Text(analysis.seasonTitle)
                 .font(.title2.bold())
             
+//            SeasonWheelView(
+//                imageName: "fotoBunga",
+//                size: 200,
+//                colors: analysis.bestColors.map { $0.color }
+//            )
+//            
             SeasonWheelView(
-                imageName: "fotoBunga",
+                imageName: "outfit-detail-image",
+                imageData: userPhotoData,
                 size: 200,
                 colors: analysis.bestColors.map { $0.color }
             )
@@ -30,6 +38,7 @@ struct ColorWheelCard: View {
 
 #Preview {
     ColorWheelCard(
-        analysis: ColorAnalysisModel.allSeasons[0]
+        analysis: ColorAnalysisModel.allSeasons[0],
+        userPhotoData: nil
     )
 }

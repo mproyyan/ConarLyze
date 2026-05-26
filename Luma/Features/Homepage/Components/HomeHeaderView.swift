@@ -17,7 +17,7 @@ struct HomeHeaderView: View {
                     .font(.title3)
                     .foregroundStyle(.secondary)
 
-                Text(userName.capitalized)
+                Text(userName)
                     .font(.largeTitle.bold())
                     .foregroundStyle(.primary)
             }
@@ -51,6 +51,6 @@ struct HomeHeaderView: View {
 }
 
 #Preview {
-    HomeHeaderView(userName: "daffa")
+    HomeHeaderView(userName: "Daffa")
         .padding()
 }

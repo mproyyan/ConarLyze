@@ -91,15 +91,10 @@ struct ColorAnalysisView: View {
                 
                 // MARK: - Season Wheel
                 VStack(spacing: 8) {
-                    SeasonWheelView(
-                        imageName: "outfit-detail-image",
-                        imageData: viewModel.userPhoto,
-                        size: 260,
-                        colors: dynamicBestColors.map { $0.color }
-                    )
+                    SeasonWheelView(imageName: "outfit-detail-image", size: 260)
 //                    Text(analysis.seasonTitle)
 //                        .font(.title3.weight(.semibold))
-                    Text(viewModel.analysisResult?.colorType ?? analysis.seasonTitle.capitalized)
+                    Text(viewModel.analysisResult?.colorType ?? analysis.seasonTitle)
                         .font(.title3.weight(.semibold))
                     
                     NavigationLink {
@@ -178,9 +173,7 @@ struct ColorAnalysisView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink {
-                    ColorAnalysisSwitchView(
-                        userPhotoData: viewModel.userPhoto
-                    )
+                    ColorAnalysisSwitchView(/*viewModel: viewModel*/)
                 } label: {
                     Image(systemName: "square.and.pencil")
                         .font(.headline)

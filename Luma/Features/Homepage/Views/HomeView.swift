@@ -21,20 +21,14 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 28) {
                     
                     // MARK: - Header
+                    
                     HomeHeaderView(
                         userName: viewModel.userName
                     )
+                    
                     // MARK: - Analysis Card
-<<<<<<< Updated upstream
                     
                     NavigationLink(value: Route.colorAnalysis) {
-=======
-                    NavigationLink {
-                        ColorAnalysisView(
-                            viewModel: viewModel
-                        )
-                    } label: {
->>>>>>> Stashed changes
                         AnalyzeCard(
                             cardType: cardTypeFromResult,
                             bestColors: viewModel.analysisResult?.bestColors.map {
@@ -46,7 +40,8 @@ struct HomeView: View {
                     .buttonStyle(.plain)
                     .frame(height: 330)
                     
-                    // MARK: - Fashion Ideas Section       
+                    // MARK: - Fashion Ideas Section
+                    
                     VStack(alignment: .leading, spacing: 20) {
                         VStack(alignment: .leading, spacing: 4) {
                             HStack(spacing: 8) {

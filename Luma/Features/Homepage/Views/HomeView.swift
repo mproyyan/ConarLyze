@@ -8,10 +8,15 @@
 import SwiftUI
 
 struct HomeView: View {
+    private enum Route: Hashable {
+        case colorAnalysis
+    }
+    
     @StateObject private var viewModel = HomeViewModel()
+    @State private var navigationPath = NavigationPath()
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 28) {
                     
@@ -23,11 +28,7 @@ struct HomeView: View {
                     
                     // MARK: - Analysis Card
                     
-                    NavigationLink {
-                        ColorAnalysisView(
-                            viewModel: viewModel
-                        )
-                    } label: {
+                    NavigationLink(value: Route.colorAnalysis) {
                         AnalyzeCard(
                             cardType: cardTypeFromResult,
                             bestColors: viewModel.analysisResult?.bestColors.map {
@@ -102,6 +103,14 @@ struct HomeView: View {
             .task {
                 viewModel.loadLocalData()
                 await viewModel.loadOutfitRecommendationsIfNeeded()
+            }
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .colorAnalysis:
+                    ColorAnalysisView(viewModel: viewModel) {
+                        navigationPath = NavigationPath()
+                    }
+                }
             }
         }
     }

@@ -19,6 +19,15 @@ import SwiftUI
 struct ColorAnalysisView: View {
     // 1. Amati HomeViewModel yang dioper dari HomeView
     @ObservedObject var viewModel: HomeViewModel
+    let onRetakeCompleted: () -> Void
+    
+    init(
+        viewModel: HomeViewModel,
+        onRetakeCompleted: @escaping () -> Void = {}
+    ) {
+        self.viewModel = viewModel
+        self.onRetakeCompleted = onRetakeCompleted
+    }
     
     // 2. Mengambil blueprint musiman yang teksnya cocok dengan hasil di Home
     private var analysis: ColorAnalysisModel {
@@ -89,7 +98,13 @@ struct ColorAnalysisView: View {
                         .font(.title3.weight(.semibold))
                     
                     NavigationLink {
-                        OnboardingFlowView(initialStep: .tutorial)
+                        OnboardingFlowView(
+                            initialStep: .tutorial,
+                            dismissOnCompletion: true
+                        ) {
+                            await viewModel.refreshAfterRetakeAnalysis()
+                            onRetakeCompleted()
+                        }
                     } label: {
                         HStack(spacing: 8) {
                             Image(systemName: "camera")

@@ -86,6 +86,14 @@ final class HomeViewModel: ObservableObject {
         }
     }
     
+    func refreshAfterRetakeAnalysis() async {
+        loadLocalData()
+        recommendedOutfits = []
+        totalLooks = nil
+        UserDefaults.standard.removeObject(forKey: "cached_total_looks")
+        await loadOutfitRecommendationsIfNeeded()
+    }
+    
     // MARK: - Load Backend Outfit Count
     
     func loadOutfitRecommendationsIfNeeded() async {

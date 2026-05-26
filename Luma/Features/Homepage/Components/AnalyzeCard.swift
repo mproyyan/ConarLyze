@@ -331,7 +331,7 @@ struct AnalyzeCard: View {
 
 #Preview {
     AnalyzeCard(
-        cardType: AnalyzeCard.CardType.from(colorType: "Warm Autumn")
+        cardType: AnalyzeCard.CardType.from(colorType:"Deep Autumn")
     )
     .padding(.horizontal, 20)
     .frame(width: 380)

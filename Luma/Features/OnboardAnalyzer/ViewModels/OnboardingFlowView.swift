@@ -9,15 +9,24 @@ import SwiftUI
 import UIKit
 
 struct OnboardingFlowView: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: OnboardingViewModel
+    private let dismissOnCompletion: Bool
+    private let onCompletion: (() async -> Void)?
     
     @AppStorage("hasCompletedOnboarding")
     private var hasCompletedOnboarding: Bool = false
     
-    init(initialStep: OnboardingViewModel.Step = .welcome) {
+    init(
+        initialStep: OnboardingViewModel.Step = .welcome,
+        dismissOnCompletion: Bool = false,
+        onCompletion: (() async -> Void)? = nil
+    ) {
         _viewModel = StateObject(
             wrappedValue: OnboardingViewModel(initialStep: initialStep)
         )
+        self.dismissOnCompletion = dismissOnCompletion
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -79,8 +88,16 @@ struct OnboardingFlowView: View {
             }
         }
         .onChange(of: viewModel.didCompleteOnboarding) { _, didComplete in
-            if didComplete {
-                hasCompletedOnboarding = true
+            guard didComplete else { return }
+
+            hasCompletedOnboarding = true
+
+            Task {
+                await onCompletion?()
+
+                if dismissOnCompletion {
+                    dismiss()
+                }
             }
         }
         .alert("Analysis Failed", isPresented: errorAlertBinding) {

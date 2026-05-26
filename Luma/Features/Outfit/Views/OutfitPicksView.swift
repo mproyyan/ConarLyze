@@ -245,7 +245,7 @@ private struct RecommendedOutfitCardView: View {
             )
             
             VStack(alignment: .leading, spacing: 8) {
-                Text(outfit.name)
+                Text(outfit.name.capitalized)
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                     .lineLimit(1)

@@ -57,13 +57,20 @@ struct HomeView: View {
                         }
                         
                         VStack(spacing: 16) {
-                            ForEach(viewModel.ideas) { item in
+//                            ForEach(viewModel.ideas) { item in
+//                                NavigationLink {
+//                                    OutfitDetailView()
+//                                } label: {
+//                                    FashionIdeaCard(item: item)
+//                                }
+//                                .buttonStyle(.plain)
+//                            }
+                            ForEach(viewModel.recommendedOutfits.prefix(3)) { outfit in
                                 NavigationLink {
-                                    OutfitDetailView()
+                                    OutfitDetailView(outfit: outfit)
                                 } label: {
-                                    FashionIdeaCard(item: item)
+                                    FashionIdeaCard(outfit: outfit)
                                 }
-                                .buttonStyle(.plain)
                             }
                         }
                     }

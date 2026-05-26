@@ -20,8 +20,8 @@ struct OutfitKeywordRow: View {
                 .frame(width: 36)
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(title.capitalized)
-                    .font(.headline)
+                Text(title)
+                .font(.system(size: 14))
 
                 Text(description.capitalized)
                     .font(.caption)

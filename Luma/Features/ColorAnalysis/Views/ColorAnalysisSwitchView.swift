@@ -10,8 +10,9 @@ import SwiftUI
 struct ColorAnalysisSwitchView: View {
     
     let analysis = ColorAnalysisModel.allSeasons
-    
+    let userPhotoData: Data?
     @State private var selectedSeason: String? = "Soft Summer"
+
     
     var body: some View {
         
@@ -32,7 +33,8 @@ struct ColorAnalysisSwitchView: View {
                         ZStack(alignment: .topTrailing) {
                             
                             ColorWheelCard(
-                                analysis: item
+                                analysis: item,
+                                userPhotoData: userPhotoData,
                             )
                             .padding(20)
                             .frame(maxWidth: .infinity)
@@ -123,6 +125,7 @@ struct ColorAnalysisSwitchView: View {
 
 #Preview {
     NavigationStack {
-        ColorAnalysisSwitchView()
+        let dummyPhoto = UIImage(systemName: "person.crop.circle.fill")?.pngData()
+        ColorAnalysisSwitchView(userPhotoData: dummyPhoto)
     }
 }

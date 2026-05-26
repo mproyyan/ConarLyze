@@ -10,8 +10,19 @@ import SwiftUI
 struct ColorAnalysisSwitchView: View {
     
     let analysis = ColorAnalysisModel.allSeasons
+    let userPhotoData: Data?
+    let initialSelectedSeason: String
     
-    @State private var selectedSeason: String? = "Soft Summer"
+    @State private var selectedSeason: String?
+    
+    init(
+        userPhotoData: Data?,
+        initialSelectedSeason: String
+    ) {
+        self.userPhotoData = userPhotoData
+        self.initialSelectedSeason = initialSelectedSeason
+        _selectedSeason = State(initialValue: initialSelectedSeason)
+    }
     
     var body: some View {
         
@@ -32,7 +43,8 @@ struct ColorAnalysisSwitchView: View {
                         ZStack(alignment: .topTrailing) {
                             
                             ColorWheelCard(
-                                analysis: item
+                                analysis: item,
+                                userPhotoData: userPhotoData
                             )
                             .padding(20)
                             .frame(maxWidth: .infinity)
@@ -40,8 +52,9 @@ struct ColorAnalysisSwitchView: View {
                             // MARK: - Background
                             
                             .background(
-                                selectedSeason == item.seasonTitle
-                                ? Color.primary.opacity(0.08)
+                                normalizedSeason(selectedSeason ?? "")
+                                ==
+                                normalizedSeason(item.seasonTitle)                                ? Color.primary.opacity(0.08)
                                 : Color(.systemGray6)
                             )
                             
@@ -51,8 +64,9 @@ struct ColorAnalysisSwitchView: View {
                                 
                                 RoundedRectangle(cornerRadius: 32)
                                     .stroke(
-                                        selectedSeason == item.seasonTitle
-                                        ? Color.primary.opacity(0.8)
+                                        normalizedSeason(selectedSeason ?? "")
+                                        ==
+                                        normalizedSeason(item.seasonTitle)                                        ? Color.primary.opacity(0.8)
                                         : Color.clear,
                                         lineWidth: 2
                                     )
@@ -93,7 +107,9 @@ struct ColorAnalysisSwitchView: View {
                             
                             // MARK: - Checkmark
                             
-                            if selectedSeason == item.seasonTitle {
+                            if normalizedSeason(selectedSeason ?? "")
+                                ==
+                                normalizedSeason(item.seasonTitle) {
                                 
                                 ZStack {
                                     
@@ -121,8 +137,19 @@ struct ColorAnalysisSwitchView: View {
     }
 }
 
+private func normalizedSeason(_ value: String) -> String {
+    value
+        .lowercased()
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+        .replacingOccurrences(of: "_", with: " ")
+        .replacingOccurrences(of: "-", with: " ")
+}
+
 #Preview {
     NavigationStack {
-        ColorAnalysisSwitchView()
+        ColorAnalysisSwitchView(
+            userPhotoData: nil,
+            initialSelectedSeason: "Warm Spring"
+        )
     }
 }

@@ -6,9 +6,13 @@
 //
 
 import SwiftUI
+import FoundationModels
 
 struct OutfitDetailView: View {
     @Environment(\.dismiss) var dismiss
+    
+    @State private var whyItWorksText: String = "Analyzing outfit harmony..."
+    @State private var isGenerating: Bool = false
     
     // MARK: - Data
     
@@ -102,13 +106,22 @@ struct OutfitDetailView: View {
                             }
                           
                           VStack(alignment: .leading, spacing: 16) {
-                            Text("Why It Works")
-                              .font(.system(size: 18, weight: .semibold))
+                            HStack {
+                                Text("Why It Works")
+                                  .font(.system(size: 18, weight: .semibold))
+                                
+                                if isGenerating {
+                                    ProgressView()
+                                        .controlSize(.small)
+                                        .padding(.leading, 4)
+                                }
+                            }
                             
-                            Text("This look uses a subtle analogous color harmony between the blue tones in the navy jeans and steel blue sneakers, creating a naturally connected palette. The white tee brightens the outfit for balance, while the black bomber jacket adds depth and sharp contrast that makes the silhouette feel cleaner and more refined.")
+                            Text(whyItWorksText)
                               .font(.system(size: 14))
                               .foregroundStyle(Color.gray)
                               .lineSpacing(6)
+                              .animation(.easeInOut, value: whyItWorksText)
                           }
                         }
                         .padding(.horizontal, 24)
@@ -149,6 +162,9 @@ struct OutfitDetailView: View {
             .background(Color.white)
         }
         .navigationBarBackButtonHidden()
+        .task {
+            await generateWhyItWorks()
+        }
     }
     
     // MARK: - Image View
@@ -255,6 +271,61 @@ struct OutfitDetailView: View {
         return key
             .replacingOccurrences(of: "_", with: " ")
             .capitalized
+    }
+    
+    // MARK: - AI Generation
+    
+    private func generateWhyItWorks() async {
+        guard let outfit = recommendedOutfit else {
+            whyItWorksText = "This look uses a subtle analogous color harmony between the blue tones in the navy jeans and steel blue sneakers, creating a naturally connected palette. The white tee brightens the outfit for balance, while the black bomber jacket adds depth and sharp contrast that makes the silhouette feel cleaner and more refined."
+            return
+        }
+        
+        isGenerating = true
+        defer { isGenerating = false }
+        
+        #if canImport(FoundationModels)
+        if #available(iOS 18.0, *) {
+            do {
+                let model = SystemLanguageModel.default
+                
+                let instructions = """
+                You are a fashion styling assistant for a mobile outfit recommendation app.
+                Generate a short UX writing paragraph explaining why an outfit works visually and stylistically.
+                
+                Rules:
+                - Mention every clothing item naturally.
+                - Identify the outfit's color harmony type when relevant (analogous, complementary, monochromatic, triadic, neutral harmony, etc.).
+                - Explain briefly why the harmony works visually.
+                - Briefly mention contrast, balance, silhouette, or texture.
+                - Keep the tone modern, concise, and easy to read on mobile.
+                - Maximum 100 words.
+                - Avoid overly technical fashion language.
+                - Output only the paragraph.
+                """
+                
+                let session = LanguageModelSession(model: model, instructions: instructions)
+                
+                // Format the outfit items into the prompt
+                let itemsList = outfit.items.map { "\($0.name) (\($0.color))" }.joined(separator: "\n")
+                let prompt = "Outfit Data:\n\(itemsList)"
+                
+                let response = try await session.respond(to: prompt)
+                
+                await MainActor.run {
+                    self.whyItWorksText = response.content
+                }
+                
+            } catch {
+                print("AI Generation Error: \(error)")
+                whyItWorksText = "This outfit presents a well-balanced color harmony with solid contrast and a modern silhouette."
+            }
+            return
+        }
+        #endif
+        
+        // Fallback if FoundationModels is not available
+        whyItWorksText = "This outfit presents a well-balanced color harmony with solid contrast and a modern silhouette. (Generated on unsupported OS version)"
     }
 }
 

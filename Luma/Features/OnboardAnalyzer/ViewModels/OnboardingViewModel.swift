@@ -92,7 +92,7 @@ final class OnboardingViewModel: ObservableObject {
             
             let profile = UserProfile(
                 name: resolvedUserName,
-                gender: selectedGender?.rawValue ?? ""
+                gender: resolvedGender
             )
             
             localStateRepository.saveUserProfile(profile)
@@ -121,7 +121,27 @@ final class OnboardingViewModel: ObservableObject {
             in: .whitespacesAndNewlines
         )
         
-        return trimmedName.isEmpty ? "User" : trimmedName
+        if !trimmedName.isEmpty {
+            return trimmedName
+        }
+        
+        let savedName = localStateRepository.loadUserProfile()?.name.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+        
+        if let savedName, !savedName.isEmpty {
+            return savedName
+        }
+        
+        return "User"
+    }
+    
+    private var resolvedGender: String {
+        if let selectedGender {
+            return selectedGender.rawValue
+        }
+        
+        return localStateRepository.loadUserProfile()?.gender ?? ""
     }
     
     private func saveOnboardingCompletionState() {

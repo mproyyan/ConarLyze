@@ -12,7 +12,7 @@ struct OutfitHeaderView: View {
     let colors: [Color]
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(title)
+            Text(title.capitalized)
                 .font(.title3.bold())
             ColorPaletteView(colors: colors)
         }

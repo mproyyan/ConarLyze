@@ -29,7 +29,7 @@ struct HomeHeaderView: View {
             } label: {
                 Image(systemName: "person.crop.circle")
                     .font(.system(size: 36))
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Color.black)
             }
         }
     }

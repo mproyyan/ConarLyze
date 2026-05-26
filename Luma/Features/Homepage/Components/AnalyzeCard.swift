@@ -189,7 +189,7 @@ struct AnalyzeCard: View {
             case .softAutumn:
                 return "clearAutumn"
             case .warmAutumn:
-                return "coolAutumn"
+                return "warmAutumn"
             case .deepAutumn:
                 return "deepAutumn"
             }
@@ -331,7 +331,7 @@ struct AnalyzeCard: View {
 
 #Preview {
     AnalyzeCard(
-        cardType: AnalyzeCard.CardType.from(colorType: "Deep Winter")
+        cardType: AnalyzeCard.CardType.from(colorType: "Warm Autumn")
     )
     .padding(.horizontal, 20)
     .frame(width: 380)

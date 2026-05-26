@@ -187,7 +187,7 @@ struct AnalyzeCard: View {
             case .softSummer:
                 return "softSummer"
             case .softAutumn:
-                return "clearAutumn"
+                return "softAutumn"
             case .warmAutumn:
                 return "warmAutumn"
             case .deepAutumn:

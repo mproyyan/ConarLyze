@@ -23,8 +23,11 @@ struct HomeView: View {
                     
                     // MARK: - Analysis Card
                     
+                    // MARK: - Di dalam HomeView.swift bagian // MARK: - Analysis Card
+
                     NavigationLink {
-                        ColorAnalysisView()
+                        // OPER VIEWMODEL KE SINI AGAR DATA LEWAT SINKRON
+                        ColorAnalysisView(viewModel: viewModel)
                     } label: {
                         AnalyzeCard(
                             cardType: cardTypeFromResult,
@@ -64,8 +67,7 @@ struct HomeView: View {
                         }
                     }
                     
-                    // MARK: - Browse More
-
+     
                     // MARK: - Browse More
 
                     if let totalLooks = viewModel.totalLooks {

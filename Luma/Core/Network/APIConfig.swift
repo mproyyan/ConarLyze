@@ -12,5 +12,6 @@ enum APIConfig {
     
     static let health = "/health"
     static let analyzeColor = "/api/v1/analyze-color"
+    static let pickColor = "/api/v1/pick-color"
     static let recommendOutfit = "/api/v1/recommend"
 }

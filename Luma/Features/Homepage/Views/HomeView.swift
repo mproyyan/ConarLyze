@@ -24,11 +24,15 @@ struct HomeView: View {
                     // MARK: - Analysis Card
                     
                     NavigationLink {
-                        ColorAnalysisView()
+                        ColorAnalysisView(
+                            viewModel: viewModel
+                        )
                     } label: {
                         AnalyzeCard(
                             cardType: cardTypeFromResult,
-                            bestColors: viewModel.analysisResult?.bestColors.map { Color(hex: $0.hex) },
+                            bestColors: viewModel.analysisResult?.bestColors.map {
+                                Color(hex: $0.hex)
+                            },
                             userPhotoData: viewModel.userPhoto
                         )
                     }
@@ -72,8 +76,8 @@ struct HomeView: View {
                     }
                     
                     // MARK: - Browse More
-
-                    if let totalLooks = viewModel.totalLooks {
+                    
+                    if let totalLooks = browseTotalLooks {
                         NavigationLink {
                             OutfitPicksView(
                                 bestColors: viewModel.analysisResult?.bestColors ?? [],
@@ -81,7 +85,9 @@ struct HomeView: View {
                                 gender: viewModel.userGender
                             )
                         } label: {
-                            BrowseMoreButton(totalLooks: totalLooks)
+                            BrowseMoreButton(
+                                totalLooks: totalLooks
+                            )
                         }
                         .buttonStyle(.plain)
                     }
@@ -98,6 +104,24 @@ struct HomeView: View {
                 await viewModel.loadOutfitRecommendationsIfNeeded()
             }
         }
+    }
+    
+    // MARK: - Browse Count
+    
+    private var browseTotalLooks: Int? {
+        if let totalLooks = viewModel.totalLooks {
+            return totalLooks
+        }
+        
+        if isRunningPreview {
+            return 112
+        }
+        
+        return nil
+    }
+    
+    private var isRunningPreview: Bool {
+        ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     }
     
     // MARK: - Analysis Mapping

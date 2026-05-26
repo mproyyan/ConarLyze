@@ -5,6 +5,13 @@
 //  Created by Daffa Burane Nugraha on 25/05/26.
 //
 
+//
+//  ColorAnalysisResponse.swift
+//  Luma
+//
+//  Created by Daffa Burane Nugraha on 25/05/26.
+//
+
 import Foundation
 
 struct ColorAnalysisResponse: Codable {
@@ -23,8 +30,32 @@ struct ColorAnalysisResponse: Codable {
         case bestColors = "best_colors"
         case avoidColor = "avoid_color"
     }
+    
+    // FUNGSI MAPPER: Mengubah format bersarang (Response) menjadi format datar (Result)
+    func toDomain() -> ColorAnalysisResult {
+        let mappedBestColors = self.bestColors.map {
+            AppColorRecommendation(name: $0.name, hex: $0.hex)
+        }
+        
+        let mappedAvoidColors = self.avoidColor.map {
+            AppColorRecommendation(name: $0.name, hex: $0.hex)
+        }
+        
+        return ColorAnalysisResult(
+            colorType: self.colorType,
+            undertoneName: self.undertone.value.name,
+            undertoneExplanation: self.undertone.value.explanation,
+            skintoneName: self.skintone.value.name,
+            skintoneExplanation: self.skintone.value.explanation,
+            contrastName: self.contrast.value.name,
+            contrastExplanation: self.contrast.value.explanation,
+            bestColors: mappedBestColors,
+            avoidColors: mappedAvoidColors
+        )
+    }
 }
 
+// Sudah diperbaiki typo namanya dari AnalyasisCategory menjadi AnalysisCategory
 struct AnalysisCategory: Codable {
     let explanation: String
     let value: AnalysisValue

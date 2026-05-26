@@ -13,7 +13,10 @@ protocol OutfitRepositoryProtocol {
         avoidColors: [AppColorRecommendation],
         gender: String
     ) async throws -> [RecommendedOutfit]
+    
+    func pickColorSeason(type: String) async throws -> ColorAnalysisResponse
 }
+
 
 final class OutfitRepository: OutfitRepositoryProtocol {
     private let apiClient: APIClient
@@ -51,4 +54,24 @@ final class OutfitRepository: OutfitRepositoryProtocol {
         
         return outfits
     }
+    
+    func pickColorSeason(type: String) async throws -> ColorAnalysisResponse {
+            guard let encodedType = type.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+                throw URLError(.badURL)
+            }
+            
+            let endpointWithQuery = APIConfig.pickColor + "?type=\(encodedType)"
+            
+            let analysisResponse: ColorAnalysisResponse = try await apiClient.request(
+                endpoint: endpointWithQuery,
+                method: .get,
+                body: nil,
+                headers: [
+                    "Content-Type": "application/json"
+                ]
+            )
+            
+            return analysisResponse
+        }
+    
 }

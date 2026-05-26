@@ -5,6 +5,7 @@
 
 import Foundation
 internal import Combine
+import UIKit
 
 @MainActor
 final class HomeViewModel: ObservableObject {
@@ -119,4 +120,58 @@ final class HomeViewModel: ObservableObject {
             self.isLoadingOutfits = false
         }
     }
+    
+    // MARK: - API Actions
+    func analyzePhoto(_ image: UIImage) async {
+        do {
+            let response = try await APIService.shared.analyzeColor(image: image)
+            let result = response.toDomain()
+            
+            self.analysisResult = result
+            self.localStateRepository.saveAnalysisResult(result)
+            
+            if let photoData = image.jpegData(compressionQuality: 0.8) {
+                self.localStateRepository.saveUserPhoto(photoData)
+                self.userPhoto = photoData
+            }
+            
+            self.recommendedOutfits = []
+            await loadOutfitRecommendationsIfNeeded()
+            
+        } catch {
+            print("analyzePhoto failed:", error)
+        }
+    }
+    // MARK: - API Actions
+
+    func updateColorSeason(to type: String) async {
+        self.isLoadingOutfits = true
+        self.outfitErrorMessage = nil
+        
+        do {
+            // 1. Ambil data response mentah dari repository (Tipe: ColorAnalysisResponse)
+            let response = try await outfitRepository.pickColorSeason(type: type)
+            
+            // 2. Konversi datanya menggunakan .toDomain() menjadi flat model (Tipe: ColorAnalysisResult)
+            let domainResult = response.toDomain()
+            
+            // 3. Update state di main thread
+            self.analysisResult = domainResult
+            
+            // 4. Simpan ke local storage agar permanen (tidak hilang saat app di-close)
+            self.localStateRepository.saveAnalysisResult(domainResult)
+            
+            // 5. Reset pakaian lama dan load ulang rekomendasi pakaian berdasarkan season baru
+            self.recommendedOutfits = []
+            await loadOutfitRecommendationsIfNeeded()
+            
+        } catch {
+            print("Failed to change color season:", error)
+            self.outfitErrorMessage = error.localizedDescription
+        }
+        
+        self.isLoadingOutfits = false
+    }
+    
+    
 }

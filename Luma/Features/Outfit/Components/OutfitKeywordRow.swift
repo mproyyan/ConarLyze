@@ -23,7 +23,7 @@ struct OutfitKeywordRow: View {
                 Text(title)
                 .font(.system(size: 14))
 
-                Text(description)
+                Text(description.capitalized)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineSpacing(2)

@@ -35,11 +35,12 @@ struct OutfitPicksView: View {
     private var filteredOutfits: [RecommendedOutfit] {
         if selectedCategory == "All" {
             return viewModel.recommendedOutfits
-        } else {
-            let categoryForBackend = selectedCategory == "Smart Casual" ? "smart_casual" : selectedCategory.lowercased()
-            return viewModel.recommendedOutfits.filter {
-                $0.styleTag.lowercased() == categoryForBackend
-            }
+        }
+        
+        let selected = normalizeCategory(selectedCategory)
+        
+        return viewModel.recommendedOutfits.filter { outfit in
+            normalizeCategory(outfit.styleTag) == selected
         }
     }
     
@@ -115,6 +116,7 @@ struct OutfitPicksView: View {
                 .font(.system(size: 14, weight: .medium))
             
             Spacer()
+            
         } else if let errorMessage = viewModel.errorMessage {
             Spacer()
             
@@ -155,6 +157,7 @@ struct OutfitPicksView: View {
             }
             
             Spacer()
+            
         } else if filteredOutfits.isEmpty {
             Spacer()
             
@@ -175,6 +178,7 @@ struct OutfitPicksView: View {
             .padding(.horizontal, 24)
             
             Spacer()
+            
         } else {
             ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 16) {
@@ -192,6 +196,15 @@ struct OutfitPicksView: View {
             }
         }
     }
+    
+    // MARK: - Helpers
+    
+    private func normalizeCategory(_ value: String) -> String {
+        value
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+            .replacingOccurrences(of: " ", with: "_")
+    }
 }
 
 // MARK: - Recommended Outfit Card
@@ -207,33 +220,7 @@ private struct RecommendedOutfitCardView: View {
     
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            AsyncImage(url: URL(string: outfit.imageURL)) { phase in
-                switch phase {
-                case .empty:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.15))
-                        .overlay {
-                            ProgressView()
-                        }
-                    
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFill()
-                    
-                case .failure:
-                    Image("outfit-detail-image")
-                        .resizable()
-                        .scaledToFill()
-                    
-                @unknown default:
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.15))
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .frame(height: 160)
-            .clipped()
+            outfitImage
             
             LinearGradient(
                 colors: [
@@ -245,7 +232,7 @@ private struct RecommendedOutfitCardView: View {
             )
             
             VStack(alignment: .leading, spacing: 8) {
-                Text(outfit.name)
+                Text(outfit.name.capitalized)
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                     .lineLimit(1)
@@ -270,6 +257,38 @@ private struct RecommendedOutfitCardView: View {
             x: 0,
             y: 4
         )
+    }
+    
+    @ViewBuilder
+    private var outfitImage: some View {
+        AsyncImage(url: URL(string: outfit.imageURL)) { phase in
+            switch phase {
+            case .empty:
+                Rectangle()
+                    .fill(Color.gray.opacity(0.15))
+                    .overlay {
+                        ProgressView()
+                    }
+                
+            case .success(let image):
+                image
+                    .resizable()
+                    .scaledToFill()
+                
+            case .failure:
+                Image("outfit-detail-image")
+                    .resizable()
+                    .scaledToFill()
+                
+            @unknown default:
+                Image("outfit-detail-image")
+                    .resizable()
+                    .scaledToFill()
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 160)
+        .clipped()
     }
 }
 
@@ -306,6 +325,32 @@ private extension Color {
 
 #Preview {
     NavigationStack {
-        OutfitPicksView()
+        OutfitPicksView(
+            bestColors: [
+                AppColorRecommendation(
+                    name: "Dark Brown",
+                    hex: "#3B2A20"
+                ),
+                AppColorRecommendation(
+                    name: "Olive",
+                    hex: "#6F745F"
+                ),
+                AppColorRecommendation(
+                    name: "Cream",
+                    hex: "#E8D8BE"
+                ),
+                AppColorRecommendation(
+                    name: "White",
+                    hex: "#FFFFFF"
+                )
+            ],
+            avoidColors: [
+                AppColorRecommendation(
+                    name: "Neon Pink",
+                    hex: "#FF4FC3"
+                )
+            ],
+            gender: "male"
+        )
     }
 }

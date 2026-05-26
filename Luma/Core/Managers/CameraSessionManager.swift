@@ -276,7 +276,7 @@ extension CameraSessionManager: AVCapturePhotoCaptureDelegate {
         let offsetX = (scaledImgWidth - screenSize.width) / 2.0
         let offsetY = (scaledImgHeight - screenSize.height) / 2.0
         
-        let cropSize: CGFloat = 240
+        let cropSize: CGFloat = 260
         let screenCenter = CGPoint(x: screenSize.width / 2, y: screenSize.height * 0.42)
         
         let screenCropRect = CGRect(

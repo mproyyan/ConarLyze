@@ -57,6 +57,7 @@ struct OutfitPicksView: View {
         }
         .background(Color.white)
         .navigationBarBackButtonHidden(true)
+        .enableSwipeBackGesture()
         .task {
             await viewModel.loadRecommendations(
                 bestColors: bestColors,
@@ -88,6 +89,7 @@ struct OutfitPicksView: View {
                             )
                     )
             }
+            .buttonStyle(.plain)
             
             Spacer()
             
@@ -154,6 +156,7 @@ struct OutfitPicksView: View {
                                 .fill(Color.black)
                         )
                 }
+                .buttonStyle(.plain)
             }
             
             Spacer()
@@ -182,7 +185,7 @@ struct OutfitPicksView: View {
         } else {
             ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(filteredOutfits) { outfit in
+                    ForEach(filteredOutfits, id: \.imageURL) { outfit in
                         NavigationLink {
                             OutfitDetailView(outfit: outfit)
                         } label: {
@@ -232,11 +235,17 @@ private struct RecommendedOutfitCardView: View {
             )
             
             VStack(alignment: .leading, spacing: 8) {
-                Text(outfit.name.capitalized)
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                Text(
+                    outfit.name
+                        .replacingOccurrences(of: "_", with: " ")
+                        .replacingOccurrences(of: "-", with: " ")
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                        .capitalized
+                )
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
                 
                 HStack(spacing: 6) {
                     ForEach(Array(colors.prefix(5).enumerated()), id: \.offset) { _, color in
@@ -286,6 +295,7 @@ private struct RecommendedOutfitCardView: View {
                     .scaledToFill()
             }
         }
+        .id(outfit.imageURL)
         .frame(maxWidth: .infinity)
         .frame(height: 160)
         .clipped()
@@ -319,6 +329,44 @@ private extension Color {
             red: red,
             green: green,
             blue: blue
+        )
+    }
+}
+
+// MARK: - Swipe Back Gesture Enabler
+
+private struct SwipeBackGestureEnabler: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
+        let controller = UIViewController()
+        
+        DispatchQueue.main.async {
+            if let navigationController = controller.navigationController {
+                navigationController.interactivePopGestureRecognizer?.isEnabled = true
+                navigationController.interactivePopGestureRecognizer?.delegate = nil
+            }
+        }
+        
+        return controller
+    }
+    
+    func updateUIViewController(
+        _ uiViewController: UIViewController,
+        context: Context
+    ) {
+        DispatchQueue.main.async {
+            if let navigationController = uiViewController.navigationController {
+                navigationController.interactivePopGestureRecognizer?.isEnabled = true
+                navigationController.interactivePopGestureRecognizer?.delegate = nil
+            }
+        }
+    }
+}
+
+private extension View {
+    func enableSwipeBackGesture() -> some View {
+        self.background(
+            SwipeBackGestureEnabler()
+                .frame(width: 0, height: 0)
         )
     }
 }

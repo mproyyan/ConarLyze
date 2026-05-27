@@ -15,6 +15,7 @@ struct ColorPaletteGrid: View {
         VStack(alignment: .leading, spacing: 16) {
             Text(title)
                 .font(.title3.weight(.semibold))
+            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     ForEach(colors) { item in

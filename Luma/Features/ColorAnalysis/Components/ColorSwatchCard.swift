@@ -12,34 +12,57 @@ struct ColorSwatchCard: View {
     let hex: String
     let color: Color
     
+    private let cardWidth: CGFloat = 72
+    private let cardHeight: CGFloat = 140
+    private let cornerRadius: CGFloat = 16
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            RoundedRectangle(cornerRadius: 12)
+        ZStack(alignment: .bottomLeading) {
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .fill(color)
-                .frame(height: 90)
-            VStack(alignment: .leading, spacing: 2) {
+            
+            VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.white)
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.75)
+                
                 Text(hex)
                     .font(.caption2)
                     .foregroundStyle(.white.opacity(0.9))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
             }
             .padding(.horizontal, 8)
-            .padding(.bottom, 8)
+            .padding(.bottom, 10)
         }
-        .frame(width: 72)
-        .background(color)
+        .frame(width: cardWidth, height: cardHeight)
         .clipShape(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
         )
     }
 }
 
 #Preview {
-    ColorSwatchCard(
-        title: "Dark Blue",
-        hex: "#111827",
-        color: .blue
-    )
+    HStack {
+        ColorSwatchCard(
+            title: "Dark Blue",
+            hex: "#111827",
+            color: .blue
+        )
+        
+        ColorSwatchCard(
+            title: "dusty neutral gray",
+            hex: "#A0A098",
+            color: .gray
+        )
+        
+        ColorSwatchCard(
+            title: "bright saturated blue",
+            hex: "#1060C0",
+            color: .cyan
+        )
+    }
+    .padding()
 }

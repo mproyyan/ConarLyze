@@ -7,19 +7,11 @@
 
 import SwiftUI
 
-//
-//  ColorAnalysisView.swift
-//  Luma
-//
-//  Created by Ahmad Zaki on 21/05/26.
-//
-
-import SwiftUI
-
 struct ColorAnalysisView: View {
-    // 1. Amati HomeViewModel yang dioper dari HomeView
     @ObservedObject var viewModel: HomeViewModel
     let onRetakeCompleted: () -> Void
+    
+    @State private var showRetakeFlow = false
     
     init(
         viewModel: HomeViewModel,
@@ -29,17 +21,18 @@ struct ColorAnalysisView: View {
         self.onRetakeCompleted = onRetakeCompleted
     }
     
-    // 2. Mengambil blueprint musiman yang teksnya cocok dengan hasil di Home
+    // MARK: - Dynamic Data
+    
     private var analysis: ColorAnalysisModel {
         if let apiResult = viewModel.analysisResult {
             return ColorAnalysisModel.allSeasons.first {
                 $0.seasonTitle.lowercased() == apiResult.colorType.lowercased()
             } ?? ColorAnalysisModel.dummy
         }
+        
         return ColorAnalysisModel.dummy
     }
     
-    // 3. Memperbaiki isi detail card Undertone, Skintone, Contrast secara dinamis dari API/Home
     private var dynamicInfos: [AnalysisInfoModel] {
         if let apiResult = viewModel.analysisResult {
             return [
@@ -48,69 +41,75 @@ struct ColorAnalysisView: View {
                 AnalysisInfoModel(title: "Contrast", value: apiResult.contrastName)
             ]
         }
-        // Fallback ke data dummy jika data API belum di-load
+        
         return analysis.infos
     }
     
-    // Tambahkan di bawah 'private var dynamicInfos'
     private var dynamicBestColors: [ColorSwatchModel] {
         if let apiResult = viewModel.analysisResult {
             return apiResult.bestColors.map {
-                ColorSwatchModel(title: $0.name, hex: $0.hex, color: Color(hex: $0.hex))
+                ColorSwatchModel(
+                    title: $0.name,
+                    hex: $0.hex,
+                    color: Color(hex: $0.hex)
+                )
             }
         }
+        
         return analysis.bestColors
     }
-
+    
     private var dynamicAvoidColors: [ColorSwatchModel] {
         if let apiResult = viewModel.analysisResult {
             return apiResult.avoidColors.map {
-                ColorSwatchModel(title: $0.name, hex: $0.hex, color: Color(hex: $0.hex))
+                ColorSwatchModel(
+                    title: $0.name,
+                    hex: $0.hex,
+                    color: Color(hex: $0.hex)
+                )
             }
         }
+        
         return analysis.avoidColors
     }
     
+    // MARK: - Body
     
     var body: some View {
-        // Hapus NavigationStack di sini karena sudah dibungkus oleh HomeView
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 24) {
+                
                 // MARK: - Header
+                
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Your Color Season")
                             .font(.title.bold())
+                        
                         Text("Personal color analysis")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
+                    
                     Spacer()
                 }
                 .padding(.trailing, 24)
                 
                 // MARK: - Season Wheel
+                
                 VStack(spacing: 8) {
-//                    SeasonWheelView(imageName: "outfit-detail-image", size: 260)
                     SeasonWheelView(
                         imageName: "outfit-detail-image",
                         imageData: viewModel.userPhoto,
                         size: 260,
                         colors: dynamicBestColors.map { $0.color }
                     )
-//                    Text(analysis.seasonTitle)
-//                        .font(.title3.weight(.semibold))
+                    
                     Text(viewModel.analysisResult?.colorType.capitalized ?? analysis.seasonTitle.capitalized)
                         .font(.title3.weight(.semibold))
                     
-                    NavigationLink {
-                        OnboardingFlowView(
-                            initialStep: .tutorial,
-                            dismissOnCompletion: true
-                        ) {
-                            await viewModel.refreshAfterRetakeAnalysis()
-                            onRetakeCompleted()
-                        }
+                    Button {
+                        showRetakeFlow = true
                     } label: {
                         HStack(spacing: 8) {
                             Image(systemName: "camera")
@@ -123,6 +122,7 @@ struct ColorAnalysisView: View {
                         .background(Color.primaryColor.opacity(0.08))
                         .clipShape(Capsule())
                     }
+                    .buttonStyle(.plain)
                     
                     Text("AI-generated analysis. Results may vary depending on lighting and image quality.")
                         .font(.caption)
@@ -133,7 +133,8 @@ struct ColorAnalysisView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.trailing, 24)
                 
-                // MARK: - Analysis Cards (Menggunakan dynamicInfos agar isinya berubah)
+                // MARK: - Analysis Cards
+                
                 VStack(spacing: 12) {
                     ForEach(dynamicInfos) { item in
                         NavigationLink {
@@ -146,7 +147,7 @@ struct ColorAnalysisView: View {
                                         answerResult: "Analysis not yet loaded."
                                     )
                             )
-                        }label: {
+                        } label: {
                             AnalysisInfoCard(
                                 title: item.title,
                                 value: item.value
@@ -157,25 +158,24 @@ struct ColorAnalysisView: View {
                 }
                 .padding(.trailing, 24)
                 
-//                // MARK: - Best Colors
-//                ColorPaletteGrid(
-//                    title: "Your Best Colors",
-//                    colors: analysis.bestColors
-//                )
-//                
-//                // MARK: - Avoid Colors
-//                ColorPaletteGrid(
-//                    title: "Avoid These Color",
-//                    colors: analysis.avoidColors
-//                )
-                ColorPaletteGrid(title: "Your Best Colors", colors: dynamicBestColors)
-                ColorPaletteGrid(title: "Avoid These Color", colors: dynamicAvoidColors)
+                // MARK: - Best Colors
+                
+                ColorPaletteGrid(
+                    title: "Your Best Colors",
+                    colors: dynamicBestColors
+                )
+                
+                // MARK: - Avoid Colors
+                
+                ColorPaletteGrid(
+                    title: "Avoid These Color",
+                    colors: dynamicAvoidColors
+                )
             }
             .padding(.leading, 24)
             .padding(.top, 16)
             .padding(.bottom, 40)
         }
-        // PERBAIKAN: Toolbar ditempelkan di dalam scope view hirarki agar tidak hilang
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink {
@@ -183,12 +183,23 @@ struct ColorAnalysisView: View {
                         userPhotoData: viewModel.userPhoto,
                         initialSelectedSeason: viewModel.analysisResult?.colorType
                             ?? analysis.seasonTitle
-                    )
+                    ) { selectedSeason in
+                        await viewModel.updateColorSeason(to: selectedSeason)
+                    }
                 } label: {
                     Image(systemName: "square.and.pencil")
                         .font(.headline)
                         .foregroundStyle(.black)
                 }
+            }
+        }
+        .fullScreenCover(isPresented: $showRetakeFlow) {
+            OnboardingFlowView(
+                initialStep: .tutorial,
+                dismissOnCompletion: true
+            ) {
+                await viewModel.refreshAfterRetakeAnalysis()
+                onRetakeCompleted()
             }
         }
         .background(Color(.systemGroupedBackground))
@@ -198,5 +209,3 @@ struct ColorAnalysisView: View {
 #Preview {
     ColorAnalysisView(viewModel: HomeViewModel())
 }
-
-

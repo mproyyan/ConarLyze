@@ -258,7 +258,7 @@ private struct RecommendedOutfitCardView: View {
             .padding(.horizontal, 10)
             .padding(.bottom, 14)
         }
-        .frame(height: 160)
+        .aspectRatio(9.0 / 16.0, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         .shadow(
             color: Color.black.opacity(0.08),
@@ -296,8 +296,7 @@ private struct RecommendedOutfitCardView: View {
             }
         }
         .id(outfit.imageURL)
-        .frame(maxWidth: .infinity)
-        .frame(height: 160)
+        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .clipped()
     }
 }

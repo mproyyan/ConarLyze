@@ -47,6 +47,8 @@ struct OnboardingFlowView: View {
                 
             case .tutorial:
                 TutorialView {
+                    viewModel.goToIntroduction()
+                } onNext: {
                     viewModel.goToCamera()
                 }
                 

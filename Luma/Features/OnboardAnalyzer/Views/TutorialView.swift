@@ -8,10 +8,28 @@
     import SwiftUI
 
     struct TutorialView: View {
+        let onBack: () -> Void
         let onNext: () -> Void
+        
         var body: some View {
             VStack {
                 VStack {
+                    HStack {
+                        Button(action: onBack) {
+                            Image(systemName: "chevron.left")
+                                .font(.title3.weight(.semibold))
+                                .foregroundStyle(.black)
+                                .frame(width: 52, height: 52)
+                                .background(.white)
+                                .clipShape(Circle())
+                                .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 6)
+                        }
+                        .buttonStyle(.plain)
+                        
+                        Spacer()
+                    }
+                    .padding(.bottom, 16)
+                    
                     VStack(alignment: .leading, spacing: 8) {
                         Text(
                             "Let's get your color analysis \(Text("right").foregroundColor(.orange))"
@@ -46,5 +64,5 @@
     }
 
     #Preview {
-        TutorialView(onNext: {})
+        TutorialView(onBack: {}, onNext: {})
     }

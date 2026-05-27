@@ -12,22 +12,51 @@ struct ColorPaletteGrid: View {
     let colors: [ColorSwatchModel]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(title)
-                .font(.title3.weight(.semibold))
+        VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(title)
+                    .font(.title3.weight(.semibold))
+                
+                Text(title.lowercased().contains("avoid") ? "Colors in this spectrum may appear too bright, warm, or overpowering against your natural coloring." : "Colors in this spectrum naturally complement your features and create a more balanced, harmonious look.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(.trailing, 24)
+            
+          VStack(spacing: 16) {
+            VStack(spacing: 12) {
+              Text(title.lowercased().contains("avoid") ? "Color spectrum to avoid" : "Your best color spectrum")
+                .font(.system(size: 12))
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, alignment: .center)
+              
+              LinearGradient(
+                colors: colors.map(\.color),
+                startPoint: .leading,
+                endPoint: .trailing
+              )
+              .frame(height: 48)
+              .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+            .padding(16)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .padding(.trailing, 24)
             
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(colors) { item in
-                        ColorSwatchCard(
-                            title: item.title,
-                            hex: item.hex,
-                            color: item.color
-                        )
-                    }
+              HStack(spacing: 12) {
+                ForEach(colors) { item in
+                  ColorSwatchCard(
+                    title: item.title,
+                    hex: item.hex,
+                    color: item.color
+                  )
                 }
-                .padding(.trailing, 24)
+              }
+              .padding(.trailing, 24)
             }
+          }
         }
     }
 }

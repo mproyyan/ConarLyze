@@ -45,16 +45,13 @@ struct HomeView: View {
                     VStack(alignment: .leading, spacing: 20) {
                         VStack(alignment: .leading, spacing: 4) {
                             HStack(spacing: 8) {
-                                Image(systemName: "tshirt")
-                                    .foregroundStyle(.secondary)
-                                
                                 Text("CURATED FOR YOU")
-                                    .font(.headline)
-                                    .foregroundStyle(.secondary)
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundStyle(.secondary)
                             }
                             
                             Text("Fashion Ideas")
-                                .font(.largeTitle.bold())
+                                .font(.title2.bold())
                         }
                         
                         VStack(spacing: 16) {

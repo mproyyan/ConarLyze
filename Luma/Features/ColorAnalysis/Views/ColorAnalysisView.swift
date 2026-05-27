@@ -157,20 +157,23 @@ struct ColorAnalysisView: View {
                     }
                 }
                 .padding(.trailing, 24)
+              
+              VStack(spacing: 24) {
                 
                 // MARK: - Best Colors
                 
                 ColorPaletteGrid(
-                    title: "Your Best Colors",
-                    colors: dynamicBestColors
+                  title: "Your Best Colors",
+                  colors: dynamicBestColors
                 )
                 
                 // MARK: - Avoid Colors
                 
                 ColorPaletteGrid(
-                    title: "Avoid These Color",
-                    colors: dynamicAvoidColors
+                  title: "Avoid These Color",
+                  colors: dynamicAvoidColors
                 )
+              }
             }
             .padding(.leading, 24)
             .padding(.top, 16)

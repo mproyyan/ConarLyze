@@ -16,6 +16,10 @@ struct ColorPaletteView: View {
                 RoundedRectangle(cornerRadius: 10)
                     .fill(colors[index])
                     .frame(width: 30, height: 30)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.black.opacity(0.15), lineWidth: 1)
+                    )
             }
         }
     }

@@ -10,10 +10,15 @@ import SwiftUI
 struct IntroductionView: View {
     @Binding var name: String
     @Binding var selectedGender: Gender?
+    @State private var showValidationAlert = false
     let onNext: () -> Void
     enum Gender: String {
         case male
         case female
+    }
+    var isFormValid: Bool {
+        !name.trimmingCharacters(in:.whitespacesAndNewlines).isEmpty
+        && selectedGender != nil
     }
     
     var body: some View {
@@ -25,10 +30,13 @@ struct IntroductionView: View {
                 
                 Text("Fill out the rest of your details so app can analyze your skin")
                     .font(.system(size: 20))
-                //.multilineTextAlignment(.center)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
             }
             .frame(maxWidth: .infinity)
-            .padding(.bottom, 60)
+            .padding(.top, 60)
+            .padding(.bottom, 40)
             
             VStack(alignment: .leading) {
                 // MARK: - Form
@@ -81,7 +89,11 @@ struct IntroductionView: View {
             
             VStack {
                 Button(action: {
-                    onNext()
+                    if isFormValid {
+                        onNext()
+                    } else {
+                        showValidationAlert = true
+                    }
                 }) {
                     Text("Next")
                         .frame(maxWidth: .infinity)
@@ -89,10 +101,17 @@ struct IntroductionView: View {
                         .background(Color.primaryColor)
                         .foregroundColor(Color.white)
                         .cornerRadius(30)
+                    
+                    
                 }
             }
         }
         .padding(.horizontal, 20)
+        .alert("Form Incomplete", isPresented: $showValidationAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Please fill in your name and select your gender before continuing.")
+        }
     }
 }
 
@@ -103,3 +122,4 @@ struct IntroductionView: View {
         onNext: {}
     )
 }
+

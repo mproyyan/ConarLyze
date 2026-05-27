@@ -24,6 +24,7 @@ final class OnboardingViewModel: ObservableObject {
     // MARK: - Published Flow State
     
     @Published var currentStep: Step = .welcome
+    let initialStep: Step
     @Published var userName: String = ""
     @Published var selectedGender: IntroductionView.Gender? = nil
     
@@ -49,6 +50,7 @@ final class OnboardingViewModel: ObservableObject {
         ),
         localStateRepository: LocalStateRepositoryProtocol = LocalStateRepository.shared
     ) {
+        self.initialStep = initialStep
         self.currentStep = initialStep
         self.analysisRepository = analysisRepository
         self.localStateRepository = localStateRepository

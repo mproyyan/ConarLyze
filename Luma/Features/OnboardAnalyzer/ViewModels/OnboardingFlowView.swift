@@ -48,13 +48,19 @@ struct OnboardingFlowView: View {
 
             case .tutorial:
                 TutorialView {
-                    viewModel.goToIntroduction()
+                    if viewModel.initialStep == .tutorial {
+                        dismiss()
+                    } else {
+                        viewModel.goToIntroduction()
+                    }
                 } onNext: {
                     viewModel.goToCamera()
                 }
 
             case .camera:
-                CameraView { imageURL in
+                CameraView(onBack: {
+                    viewModel.goToTutorial()
+                }) { imageURL in
                     guard let imageURL = imageURL else {
                         viewModel.errorMessage = "Failed to capture image."
                         return

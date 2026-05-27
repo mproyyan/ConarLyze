@@ -11,6 +11,7 @@ import AVFoundation
 // MARK: - CameraView
 
 struct CameraView: View {
+    var onBack: (() -> Void)? = nil
     let onPhotoCaptured: (URL?) -> Void
   @StateObject private var viewModel = CameraViewModel()
   
@@ -129,12 +130,23 @@ struct CameraView: View {
   }
   
   private var topBar: some View {
-    HStack {
-      Spacer()
+    ZStack {
       Text("Face Capture")
         .font(.system(size: 16, weight: .semibold, design: .rounded))
         .foregroundColor(.white)
-      Spacer()
+        
+      HStack {
+        if let onBack = onBack {
+          Button(action: onBack) {
+            Image(systemName: "chevron.left")
+              .font(.system(size: 18, weight: .semibold))
+              .foregroundColor(.white)
+              .frame(width: 44, height: 44)
+              .background(.ultraThinMaterial, in: Circle())
+          }
+        }
+        Spacer()
+      }
     }
     .padding(.top, 60)
     .padding(.horizontal, 20)

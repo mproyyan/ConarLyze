@@ -40,6 +40,7 @@ struct OutfitDetailView: View {
             let colors = recommendedOutfit.items.compactMap {
                 Color(hexString: $0.hex)
             }
+            
             return colors.isEmpty ? dummyOutfit.colors : colors
         } else {
             return dummyOutfit.colors
@@ -72,9 +73,7 @@ struct OutfitDetailView: View {
                         outfitImageView
                             .frame(
                                 width: proxy.size.width,
-                                // Tambah extra height agar gambar lebih tinggi
-                                // sehingga kepala tidak terpotong Dynamic Island
-                                height: imageHeight + proxy.safeAreaInsets.top 
+                                height: imageHeight + proxy.safeAreaInsets.top
                             )
                             .clipped()
                             .ignoresSafeArea(edges: .top)
@@ -94,7 +93,7 @@ struct OutfitDetailView: View {
                             
                             VStack(alignment: .leading, spacing: 16) {
                                 Text("Style Keywords")
-                                  .font(.system(size: 18, weight: .semibold))
+                                    .font(.system(size: 18, weight: .semibold))
                                 
                                 ForEach(outfitKeywords) { item in
                                     OutfitKeywordRow(
@@ -104,25 +103,27 @@ struct OutfitDetailView: View {
                                     )
                                 }
                             }
-                          
-                          VStack(alignment: .leading, spacing: 16) {
-                            HStack {
-                                Text("Why It Works")
-                                  .font(.system(size: 18, weight: .semibold))
-                                
-                                if isGenerating {
-                                    ProgressView()
-                                        .controlSize(.small)
-                                        .padding(.leading, 4)
-                                }
-                            }
                             
-                            Text(whyItWorksText)
-                              .font(.system(size: 14))
-                              .foregroundStyle(Color.gray)
-                              .lineSpacing(6)
-                              .animation(.easeInOut, value: whyItWorksText)
-                          }
+                            // MARK: - Why It Works Section
+                            
+                            VStack(alignment: .leading, spacing: 16) {
+                                HStack {
+                                    Text("Why It Works")
+                                        .font(.system(size: 18, weight: .semibold))
+                                    
+                                    if isGenerating {
+                                        ProgressView()
+                                            .controlSize(.small)
+                                            .padding(.leading, 4)
+                                    }
+                                }
+                                
+                                Text(whyItWorksText)
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(Color.gray)
+                                    .lineSpacing(6)
+                                    .animation(.easeInOut, value: whyItWorksText)
+                            }
                         }
                         .padding(.horizontal, 24)
                         .padding(.top, 36)
@@ -161,7 +162,8 @@ struct OutfitDetailView: View {
             }
             .background(Color.white)
         }
-        .navigationBarBackButtonHidden()
+        .navigationBarBackButtonHidden(true)
+        .enableSwipeBackGesture()
         .task {
             await generateWhyItWorks()
         }
@@ -179,33 +181,52 @@ struct OutfitDetailView: View {
                 case .empty:
                     Rectangle()
                         .fill(Color.gray.opacity(0.12))
-                        .overlay { ProgressView() }
+                        .overlay {
+                            ProgressView()
+                        }
                     
                 case .success(let image):
                     image
                         .resizable()
                         .scaledToFill()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                        .frame(
+                            maxWidth: .infinity,
+                            maxHeight: .infinity,
+                            alignment: .top
+                        )
                     
                 case .failure:
                     Image(dummyOutfit.imageName)
                         .resizable()
                         .scaledToFill()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                        .frame(
+                            maxWidth: .infinity,
+                            maxHeight: .infinity,
+                            alignment: .top
+                        )
                     
                 @unknown default:
                     Image(dummyOutfit.imageName)
                         .resizable()
                         .scaledToFill()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                        .frame(
+                            maxWidth: .infinity,
+                            maxHeight: .infinity,
+                            alignment: .top
+                        )
                 }
             }
+            .id(recommendedOutfit.imageURL)
             
         } else {
             Image(dummyOutfit.imageName)
                 .resizable()
                 .scaledToFill()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity,
+                    alignment: .top
+                )
         }
     }
     
@@ -304,10 +325,16 @@ struct OutfitDetailView: View {
                 - Output only the paragraph.
                 """
                 
-                let session = LanguageModelSession(model: model, instructions: instructions)
+                let session = LanguageModelSession(
+                    model: model,
+                    instructions: instructions
+                )
                 
-                // Format the outfit items into the prompt
-                let itemsList = outfit.items.map { "\($0.name) (\($0.color))" }.joined(separator: "\n")
+                let itemsList = outfit.items.map {
+                    "\($0.name) (\($0.color))"
+                }
+                .joined(separator: "\n")
+                
                 let prompt = "Outfit Data:\n\(itemsList)"
                 
                 let response = try await session.respond(to: prompt)
@@ -320,11 +347,11 @@ struct OutfitDetailView: View {
                 print("AI Generation Error: \(error)")
                 whyItWorksText = "This outfit presents a well-balanced color harmony with solid contrast and a modern silhouette."
             }
+            
             return
         }
         #endif
         
-        // Fallback if FoundationModels is not available
         whyItWorksText = "This outfit presents a well-balanced color harmony with solid contrast and a modern silhouette. (Generated on unsupported OS version)"
     }
 }
@@ -353,6 +380,44 @@ private extension Color {
         let blue = Double(rgbValue & 0x0000FF) / 255.0
         
         self = Color(red: red, green: green, blue: blue)
+    }
+}
+
+// MARK: - Swipe Back Gesture Enabler
+
+private struct SwipeBackGestureEnabler: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
+        let controller = UIViewController()
+        
+        DispatchQueue.main.async {
+            if let navigationController = controller.navigationController {
+                navigationController.interactivePopGestureRecognizer?.isEnabled = true
+                navigationController.interactivePopGestureRecognizer?.delegate = nil
+            }
+        }
+        
+        return controller
+    }
+    
+    func updateUIViewController(
+        _ uiViewController: UIViewController,
+        context: Context
+    ) {
+        DispatchQueue.main.async {
+            if let navigationController = uiViewController.navigationController {
+                navigationController.interactivePopGestureRecognizer?.isEnabled = true
+                navigationController.interactivePopGestureRecognizer?.delegate = nil
+            }
+        }
+    }
+}
+
+private extension View {
+    func enableSwipeBackGesture() -> some View {
+        self.background(
+            SwipeBackGestureEnabler()
+                .frame(width: 0, height: 0)
+        )
     }
 }
 

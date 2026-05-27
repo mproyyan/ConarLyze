@@ -71,18 +71,18 @@ struct FashionIdeaCard: View {
                     image
                         .resizable()
                         .scaledToFill()
-                    
+                
                 case .failure:
                     Image("outfit")
                         .resizable()
                         .scaledToFill()
-                    
+                
                 @unknown default:
-                    
                     Rectangle()
                         .fill(Color.gray.opacity(0.08))
                 }
             }
+            .id(outfit.imageURL)
             .frame(width: 112, height: 168)
             .clipShape(
                 RoundedRectangle(cornerRadius: 20)

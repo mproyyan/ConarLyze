@@ -100,8 +100,10 @@ final class CameraViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] url in
                 guard let self else { return }
+                
                 self.capturedImageURL = url
                 self.showCaptureSuccess = true
+                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
                     self.showCaptureSuccess = false
                 }
